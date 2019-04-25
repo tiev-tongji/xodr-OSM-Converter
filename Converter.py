@@ -40,20 +40,35 @@ class Converter(object):
 
 		min_x, scale_x, min_y, scale_y = self.loc_scale(root)
 		for road_root in root.iter('road'):
-
 			way_nodes_id = []
 
+			last_node_id = 0
 			for geometry in root.iter('geometry'):
-				geo_x = ((float(geometry.attrib['x']))-min_x)/scale_x
-				geo_y = ((float(geometry.attrib['y']))-min_y)/scale_y
-
-				node = Node(node_id, geo_x, geo_y)
+				start_x = ((float(geometry.attrib['x']))-min_x)/scale_x
+				start_y = ((float(geometry.attrib['y']))-min_y)/scale_y
+				start_node = Node(node_id, start_x, start_y)
+				self.nodes.append(start_node)
 				node_id = node_id + 1
-				self.nodes.append(node)
 
-				way_nodes_id.append(node.id)
+				if last_node_id != 0:
+					self.ways.append(Way(int(road_root.attrib['id']), [last_node_id, start_node.id]))
+					
+				# if geometry[0].tag == 'line': # insert every start node and way
+				last_node_id = start_node.id
+				# else if geometry[0].tag == 'spiral': # sampling and insert node & way
+				# 	pass
+				# else if geometry[0].tag == 'arc':
+				# 	pass
+				# geo_x = ((float(geometry.attrib['x']))-min_x)/scale_x
+				# geo_y = ((float(geometry.attrib['y']))-min_y)/scale_y
 
-			self.ways.append(Way(int(road_root.attrib['id']), way_nodes_id))
+				# node = Node(node_id, geo_x, geo_y)
+				# node_id = node_id + 1
+				# self.nodes.append(node)
+
+				# way_nodes_id.append(node.id)
+
+			
 
 	def loc_scale(self, root):
 		x = []
@@ -86,6 +101,8 @@ class Converter(object):
 			way_root = ET.SubElement(osm_root, 'way', wat_attrib)
 			for way_node in way.nodes_id:
 				ET.SubElement(way_root, 'nd', {'ref': str(way_node)})
+			ET.SubElement(way_root, 'tag', {'k': "highway", 'v':'tertiary'})
+			ET.SubElement(way_root, 'tag', {'k': "name", 'v':'uknown road'})
 		tree = ET.ElementTree(osm_root)
 		tree.write(filename)
 
