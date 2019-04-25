@@ -3,7 +3,6 @@ import math
 import matplotlib.pyplot as plt
 from datetime import datetime
 
-
 class Node(object):
 	"""docstring for Node"""
 
@@ -30,7 +29,7 @@ class Way(object):
 class Converter(object):
 	"""docstring for Converter"""
 
-	def __init__(self, filename):
+	def __init__(self, filename, scene_scale):
 		super(Converter, self).__init__()
 
 		self.nodes = []
@@ -40,7 +39,7 @@ class Converter(object):
 		tree = ET.parse(filename)
 		root = tree.getroot()
 
-		self.scale = self.get_scale(root)
+		self.scale = self.set_scale(root, scene_scale)
 		for road_root in root.iter('road'):
 			way_nodes_id = []
 
@@ -49,7 +48,7 @@ class Converter(object):
 				start_y = (float(geometry.attrib['y']))/self.scale
 
 				start_node = Node(node_id, start_x, start_y)
-				plt.plot(start_x, start_y, 'bo')
+				# plt.plot(start_x, start_y, 'bo')
 				self.nodes.append(start_node)
 				way_nodes_id.append(start_node.id)
 				node_id = node_id + 1
@@ -61,7 +60,7 @@ class Converter(object):
 					curvature = float(geometry[0].attrib['curvature'])
 					hdg = float(geometry.attrib['hdg'])
 					noscale_length = float(geometry.attrib['length'])
-					nodes_xy = self.arc_nodes(start_x, start_y, curvature, noscale_length, hdg, 1)
+					nodes_xy = self.arc_nodes(start_x, start_y, curvature, noscale_length, hdg)
 					for xy in nodes_xy:
 						arc_node = Node(node_id, xy[0], xy[1])
 						# plt.plot(xy[0], xy[1], 'bo')
@@ -81,7 +80,7 @@ class Converter(object):
 				# way_nodes_id.append(node.id)
 			end_x, end_y = self.get_road_end(geometry)
 			end_node = Node(node_id, end_x, end_y)
-			plt.plot(end_x, end_y, 'bo')
+			# plt.plot(end_x, end_y, 'bo')
 			self.nodes.append(end_node)
 			way_nodes_id.append(end_node.id)
 			node_id = node_id + 1
@@ -120,7 +119,7 @@ class Converter(object):
 		nodes_xy = []
 
 		if sampling_length is None:
-			total_sampling = 100
+			total_sampling = 20
 		else:
 			total_sampling = int(length / sampling_length)
 
@@ -141,9 +140,9 @@ class Converter(object):
 		return nodes_xy
 
 
-	def get_scale(self, root):
+	def set_scale(self, root, scene_scale):
 		# cast the bigger map into target boundary
-		tar_scale = 0.01 # target boundary is [-tar_scale,tar_scale]
+		tar_scale = scene_scale # target boundary is [-tar_scale,tar_scale]
 		x = []
 		for geometry in root.iter('geometry'):
 			x.append(float(geometry.attrib['x']))
@@ -175,5 +174,4 @@ class Converter(object):
 		tree = ET.ElementTree(osm_root)
 		tree.write(filename)
 
-
-Converter('Crossing8Course.xodr').generate_osm('Crossing8Course.osm')
+Converter('./xodr/Test_ToolRoadRunner.xodr', 0.01).generate_osm('./osm/Test_ToolRoadRunner.osm')
