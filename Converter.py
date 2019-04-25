@@ -174,4 +174,4 @@ class Converter(object):
 		tree = ET.ElementTree(osm_root)
 		tree.write(filename)
 
-Converter('./xodr/Test_ToolRoadRunner.xodr', 0.01).generate_osm('./osm/Test_ToolRoadRunner.osm')
+Converter('./xodr/simple.xodr', 0.01).generate_osm('./osm/simple.osm')
