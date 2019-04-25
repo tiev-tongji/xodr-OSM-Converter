@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as ET
 import math
+import matplotlib.pyplot as plt
 from datetime import datetime
 
 
@@ -21,6 +22,7 @@ class Way(object):
 	def __init__(self, way_id, nodes_id):
 		super(Way, self).__init__()
 		self.id = way_id
+
 		self.nodes_id = nodes_id
 		self.width = 1
 
@@ -38,49 +40,107 @@ class Converter(object):
 		tree = ET.parse(filename)
 		root = tree.getroot()
 
-		min_x, scale_x, min_y, scale_y = self.loc_scale(root)
+		self.scale = self.get_scale(root)
 		for road_root in root.iter('road'):
 			way_nodes_id = []
 
-			last_node_id = 0
 			for geometry in root.iter('geometry'):
-				start_x = ((float(geometry.attrib['x']))-min_x)/scale_x
-				start_y = ((float(geometry.attrib['y']))-min_y)/scale_y
+				start_x = (float(geometry.attrib['x']))/self.scale
+				start_y = (float(geometry.attrib['y']))/self.scale
+
 				start_node = Node(node_id, start_x, start_y)
+				plt.plot(start_x, start_y, 'bo')
 				self.nodes.append(start_node)
+				way_nodes_id.append(start_node.id)
 				node_id = node_id + 1
 
-				if last_node_id != 0:
-					self.ways.append(Way(int(road_root.attrib['id']), [last_node_id, start_node.id]))
-					
-				# if geometry[0].tag == 'line': # insert every start node and way
-				last_node_id = start_node.id
-				# else if geometry[0].tag == 'spiral': # sampling and insert node & way
-				# 	pass
-				# else if geometry[0].tag == 'arc':
-				# 	pass
-				# geo_x = ((float(geometry.attrib['x']))-min_x)/scale_x
-				# geo_y = ((float(geometry.attrib['y']))-min_y)/scale_y
+				if geometry[0].tag == 'line': # only insert start node
+					pass
+
+				elif geometry[0].tag == 'arc': # sampling and insert nodes
+					curvature = float(geometry[0].attrib['curvature'])
+					hdg = float(geometry.attrib['hdg'])
+					length = float(geometry.attrib['length'])
+					nodes_xy = self.arc_nodes(start_x, start_y, curvature, length, hdg, 1)
+					for xy in nodes_xy:
+						arc_node = Node(node_id, xy[0], xy[1])
+						plt.plot(xy[0], xy[1], 'bo')
+						self.nodes.append(arc_node)
+						way_nodes_id.append(arc_node.id)
+						node_id = node_id + 1
+
+				elif geometry[0].tag == 'spiral': # sampling and insert nodes
+					pass
+				# geo_x = ((float(geometry.attrib['x']))-min_x)/scale
+				# geo_y = ((float(geometry.attrib['y']))-min_y)/scale
 
 				# node = Node(node_id, geo_x, geo_y)
 				# node_id = node_id + 1
 				# self.nodes.append(node)
 
 				# way_nodes_id.append(node.id)
+			self.ways.append(Way(int(road_root.attrib['id']), way_nodes_id))
+		plt.show()
 
-			
+	def get_road_end(self, geometry):
+		start_x = (float(geometry.attrib['x']))/self.scale
+		start_y = (float(geometry.attrib['y']))/self.scale
+		length = float(geometry.attrib['length'])
+		hdg = float(geometry.attrib['hdg'])
 
-	def loc_scale(self, root):
+		if geometry[0].tag == 'line': # only insert start node
+			end_x = start_x + length * math.cos(hdg)
+			end_y = start_y + length * math.sin(hdg)
+
+		elif geometry[0].tag == 'arc': # sampling and insert nodes
+			curvature = float(geometry[0].attrib['curvature'])
+			hdg = float(geometry.attrib['hdg'])
+			length = float(geometry.attrib['length'])
+			nodes_xy = self.arc_nodes(start_x, start_y, curvature, length, hdg, 1)
+			for xy in nodes_xy:
+				arc_node = Node(node_id, xy[0], xy[1])
+				plt.plot(xy[0], xy[1], 'bo')
+				self.nodes.append(arc_node)
+				way_nodes_id.append(arc_node.id)
+				node_id = node_id + 1
+
+		elif geometry[0].tag == 'spiral': # sampling and insert nodes
+			end_x = start_x + length * math.cos(hdg)
+			end_y = start_y + length * math.sin(hdg)
+	def arc_nodes(self, start_x, start_y, curvature,length, hdg, sampling_length = None):
+		nodes_xy = []
+
+		if sampling_length is None:
+			total_sampling = 100
+		else:
+			total_sampling = int(length / sampling_length)
+
+		radius = 1/curvature
+		theta = length / radius
+		sampling_theta = theta / total_sampling
+		l = 2 * math.sin(sampling_theta/2) * radius
+
+		x = start_x
+		y = start_y
+		for i in range(total_sampling):
+			dx = l * math.cos(hdg) / self.scale
+			dy = l * math.sin(hdg) / self.scale
+			x = x + dx
+			y = y + dy
+			hdg = hdg + sampling_theta
+			nodes_xy.append([x,y])
+		return nodes_xy
+
+
+	def get_scale(self, root):
+		# cast the bigger map into target boundary
+		tar_scale = 0.05 # target boundary is [-tar_scale,tar_scale]
 		x = []
-		y = []
 		for geometry in root.iter('geometry'):
 			x.append(float(geometry.attrib['x']))
-			y.append(float(geometry.attrib['y']))
-		min_x = min(x)
-		min_y = min(y)
-		scale_x = max(x) - min_x
-		scale_y = max(y) - min_y
-		return min_x, scale_x, min_y, scale_y
+
+		scale = (max(x) - min(x))/tar_scale
+		return scale
 
 	def generate_osm(self, filename):
 		osm_attrib = {'version': "0.6", 'generator': "xodr_OSM_converter", 'copyright': "OpenStreetMap and contributors",
