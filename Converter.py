@@ -144,15 +144,24 @@ class Converter(object):
 		# cast the bigger map into target boundary
 		tar_scale = scene_scale # target boundary is [-tar_scale,tar_scale]
 		x = []
+		y = []
 		for geometry in root.iter('geometry'):
 			x.append(float(geometry.attrib['x']))
+			y.append(float(geometry.attrib['y']))
 
-		scale = (max(x) - min(x))/tar_scale
+		scale = max([(max(x) - min(x)), (max(y) - min(y))])/tar_scale
+
+		if scale == 0:
+			length = []
+			for geometry in root.iter('geometry'):
+				length.append(float(geometry.attrib['length']))
+			scale = max(length)/tar_scale	
+			
 		return scale
 
 	def generate_osm(self, filename):
-		osm_attrib = {'version': "0.6", 'generator': "xodr_OSM_converter", 'copyright': "OpenStreetMap and contributors",
-						'attribution': "http://www.openstreetmap.org/copyright", 'license': "http://opendatacommons.org/licenses/odbl/1-0/"}
+		osm_attrib = {'version': "0.6", 'generator': "xodr_OSM_converter", 'copyright': "Simon",
+						'attribution': "Simon", 'license': "GNU or whatever"}
 		osm_root = ET.Element('osm', osm_attrib)
 
 		bounds_attrib = {'minlat': '0', 'minlon': '0', 'maxlat': '1', 'maxlon': '1'}
@@ -170,7 +179,7 @@ class Converter(object):
 			for way_node in way.nodes_id:
 				ET.SubElement(way_root, 'nd', {'ref': str(way_node)})
 			ET.SubElement(way_root, 'tag', {'k': "highway", 'v':'tertiary'})
-			ET.SubElement(way_root, 'tag', {'k': "name", 'v':'uknown road'})
+			ET.SubElement(way_root, 'tag', {'k': "name", 'v':'unknown road'})
 		tree = ET.ElementTree(osm_root)
 		tree.write(filename)
 
