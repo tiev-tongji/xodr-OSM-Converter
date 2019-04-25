@@ -60,11 +60,11 @@ class Converter(object):
 				elif geometry[0].tag == 'arc': # sampling and insert nodes
 					curvature = float(geometry[0].attrib['curvature'])
 					hdg = float(geometry.attrib['hdg'])
-					length = float(geometry.attrib['length'])
-					nodes_xy = self.arc_nodes(start_x, start_y, curvature, length, hdg, 1)
+					noscale_length = float(geometry.attrib['length'])
+					nodes_xy = self.arc_nodes(start_x, start_y, curvature, noscale_length, hdg, 1)
 					for xy in nodes_xy:
 						arc_node = Node(node_id, xy[0], xy[1])
-						plt.plot(xy[0], xy[1], 'bo')
+						# plt.plot(xy[0], xy[1], 'bo')
 						self.nodes.append(arc_node)
 						way_nodes_id.append(arc_node.id)
 						node_id = node_id + 1
@@ -79,13 +79,20 @@ class Converter(object):
 				# self.nodes.append(node)
 
 				# way_nodes_id.append(node.id)
+			end_x, end_y = self.get_road_end(geometry)
+			end_node = Node(node_id, end_x, end_y)
+			plt.plot(end_x, end_y, 'bo')
+			self.nodes.append(end_node)
+			way_nodes_id.append(end_node.id)
+			node_id = node_id + 1
+			
 			self.ways.append(Way(int(road_root.attrib['id']), way_nodes_id))
-		plt.show()
+		# plt.show()
 
 	def get_road_end(self, geometry):
 		start_x = (float(geometry.attrib['x']))/self.scale
 		start_y = (float(geometry.attrib['y']))/self.scale
-		length = float(geometry.attrib['length'])
+		length = float(geometry.attrib['length'])/self.scale
 		hdg = float(geometry.attrib['hdg'])
 
 		if geometry[0].tag == 'line': # only insert start node
@@ -95,18 +102,20 @@ class Converter(object):
 		elif geometry[0].tag == 'arc': # sampling and insert nodes
 			curvature = float(geometry[0].attrib['curvature'])
 			hdg = float(geometry.attrib['hdg'])
-			length = float(geometry.attrib['length'])
-			nodes_xy = self.arc_nodes(start_x, start_y, curvature, length, hdg, 1)
-			for xy in nodes_xy:
-				arc_node = Node(node_id, xy[0], xy[1])
-				plt.plot(xy[0], xy[1], 'bo')
-				self.nodes.append(arc_node)
-				way_nodes_id.append(arc_node.id)
-				node_id = node_id + 1
+
+			radius = 1/curvature
+			theta = length / radius
+			l = 2 * math.sin(theta/2) * radius
+
+			end_x = start_x +  l * math.cos(hdg)
+			end_y = start_y +  l * math.sin(hdg)
+
 
 		elif geometry[0].tag == 'spiral': # sampling and insert nodes
 			end_x = start_x + length * math.cos(hdg)
 			end_y = start_y + length * math.sin(hdg)
+		return end_x, end_y
+
 	def arc_nodes(self, start_x, start_y, curvature,length, hdg, sampling_length = None):
 		nodes_xy = []
 
@@ -134,7 +143,7 @@ class Converter(object):
 
 	def get_scale(self, root):
 		# cast the bigger map into target boundary
-		tar_scale = 0.05 # target boundary is [-tar_scale,tar_scale]
+		tar_scale = 0.01 # target boundary is [-tar_scale,tar_scale]
 		x = []
 		for geometry in root.iter('geometry'):
 			x.append(float(geometry.attrib['x']))
@@ -167,4 +176,4 @@ class Converter(object):
 		tree.write(filename)
 
 
-Converter('simple.xodr').generate_osm('simple.osm')
+Converter('Crossing8Course.xodr').generate_osm('Crossing8Course.osm')
