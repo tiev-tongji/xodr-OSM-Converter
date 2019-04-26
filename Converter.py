@@ -72,7 +72,22 @@ class Converter(object):
                         ways[road_id].nodes_id[-1] = ways[road.successor.element_id].nodes_id[-1]
                        
                 elif road.successor.element_type == 'junction':
-                    pass                  
+                    pass 
+            if road.predecessor is not None:
+                if road.predecessor.element_type == 'road':
+                    suc_begin_node = nodes[ways[road.predecessor.element_id].nodes_id[0]]
+                    suc_end_node = nodes[ways[road.predecessor.element_id].nodes_id[-1]]
+                    
+                    begin_node = nodes[ways[road_id].nodes_id[-1]]
+                    delta_begin = fabs(begin_node.lat-suc_begin_node.lat) + fabs(begin_node.lon - suc_begin_node.lon)
+                    delta_end = fabs(begin_node.lat-suc_end_node.lat) + fabs(begin_node.lon - suc_end_node.lon)
+                    if delta_begin < delta_end:
+                        ways[road_id].nodes_id[0] = ways[road.predecessor.element_id].nodes_id[0]
+                    else:
+                        ways[road_id].nodes_id[0] = ways[road.predecessor.element_id].nodes_id[-1]
+                       
+                elif road.predecessor.element_type == 'junction':
+                    pass 
         return ways, nodes
 
     def generate_osm(self, filename):
