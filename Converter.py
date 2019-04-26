@@ -1,6 +1,6 @@
 from __future__ import division, absolute_import, print_function
 import xml.etree.ElementTree as ET
-import math
+from math import fabs
 import matplotlib.pyplot as plt
 from datetime import datetime
 
@@ -45,7 +45,7 @@ class Converter(object):
 
     def convert(self):
         nodes = list()
-        node_id = 1
+        node_id = 0
         ways = dict()
         for road_id,road in self.opendrive.roads.items():
             way_nodes_id = list()
@@ -60,7 +60,17 @@ class Converter(object):
         for road_id, road in self.opendrive.roads.items():
             if road.successor is not None:
                 if road.successor.element_type == 'road':
-                    ways[road_id].nodes_id[-1] = ways[road.successor.element_id].nodes_id[0]
+                    suc_begin_node = nodes[ways[road.successor.element_id].nodes_id[0]]
+                    suc_end_node = nodes[ways[road.successor.element_id].nodes_id[-1]]
+                    
+                    end_node = nodes[ways[road_id].nodes_id[-1]]
+                    delta_begin = fabs(end_node.lat-suc_begin_node.lat) + fabs(end_node.lon - suc_begin_node.lon)
+                    delta_end = fabs(end_node.lat-suc_end_node.lat) + fabs(end_node.lon - suc_end_node.lon)
+                    if delta_begin < delta_end:
+                        ways[road_id].nodes_id[-1] = ways[road.successor.element_id].nodes_id[0]
+                    else:
+                        ways[road_id].nodes_id[-1] = ways[road.successor.element_id].nodes_id[-1]
+                       
                 elif road.successor.element_type == 'junction':
                     pass                  
         return ways, nodes
