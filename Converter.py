@@ -1,186 +1,113 @@
+from __future__ import division, absolute_import, print_function
 import xml.etree.ElementTree as ET
 import math
 import matplotlib.pyplot as plt
 from datetime import datetime
 
-class Node(object):
-	"""docstring for Node"""
+from osmtype import Node,Way
 
-	def __init__(self, node_id, lat, lon, visible=True):
-		super(Node, self).__init__()
-		self.id = node_id
+from opendrivepy.opendrive import OpenDrive
+from opendrivepy.point import Point
 
-		self.lat = lat
-		self.lon = lon
-		self.visible = 'true' if visible else 'false'
-
-
-class Way(object):
-	"""docstring for Way"""
-
-	def __init__(self, way_id, nodes_id):
-		super(Way, self).__init__()
-		self.id = way_id
-
-		self.nodes_id = nodes_id
-		self.width = 1
 
 
 class Converter(object):
-	"""docstring for Converter"""
+    """docstring for Converter"""
 
-	def __init__(self, filename, scene_scale):
-		super(Converter, self).__init__()
-
-		self.nodes = []
-		self.ways = []
-		node_id = 1
-
-		tree = ET.parse(filename)
-		root = tree.getroot()
-
-		self.scale = self.set_scale(root, scene_scale)
-		for road_root in root.iter('road'):
-			way_nodes_id = []
-
-			for geometry in root.iter('geometry'):
-				start_x = (float(geometry.attrib['x']))/self.scale
-				start_y = (float(geometry.attrib['y']))/self.scale
-
-				start_node = Node(node_id, start_x, start_y)
-				# plt.plot(start_x, start_y, 'bo')
-				self.nodes.append(start_node)
-				way_nodes_id.append(start_node.id)
-				node_id = node_id + 1
-
-				if geometry[0].tag == 'line': # only insert start node
-					pass
-
-				elif geometry[0].tag == 'arc': # sampling and insert nodes
-					curvature = float(geometry[0].attrib['curvature'])
-					hdg = float(geometry.attrib['hdg'])
-					noscale_length = float(geometry.attrib['length'])
-					nodes_xy = self.arc_nodes(start_x, start_y, curvature, noscale_length, hdg)
-					for xy in nodes_xy:
-						arc_node = Node(node_id, xy[0], xy[1])
-						# plt.plot(xy[0], xy[1], 'bo')
-						self.nodes.append(arc_node)
-						way_nodes_id.append(arc_node.id)
-						node_id = node_id + 1
-
-				elif geometry[0].tag == 'spiral': # sampling and insert nodes
-					pass
-				# geo_x = ((float(geometry.attrib['x']))-min_x)/scale
-				# geo_y = ((float(geometry.attrib['y']))-min_y)/scale
-
-				# node = Node(node_id, geo_x, geo_y)
-				# node_id = node_id + 1
-				# self.nodes.append(node)
-
-				# way_nodes_id.append(node.id)
-			end_x, end_y = self.get_road_end(geometry)
-			end_node = Node(node_id, end_x, end_y)
-			# plt.plot(end_x, end_y, 'bo')
-			self.nodes.append(end_node)
-			way_nodes_id.append(end_node.id)
-			node_id = node_id + 1
-			
-			self.ways.append(Way(int(road_root.attrib['id']), way_nodes_id))
-		# plt.show()
-
-	def get_road_end(self, geometry):
-		start_x = (float(geometry.attrib['x']))/self.scale
-		start_y = (float(geometry.attrib['y']))/self.scale
-		length = float(geometry.attrib['length'])/self.scale
-		hdg = float(geometry.attrib['hdg'])
-
-		if geometry[0].tag == 'line': # only insert start node
-			end_x = start_x + length * math.cos(hdg)
-			end_y = start_y + length * math.sin(hdg)
-
-		elif geometry[0].tag == 'arc': # sampling and insert nodes
-			curvature = float(geometry[0].attrib['curvature'])
-			hdg = float(geometry.attrib['hdg'])
-
-			radius = 1/curvature
-			theta = length / radius
-			l = 2 * math.sin(theta/2) * radius
-
-			end_x = start_x +  l * math.cos(hdg)
-			end_y = start_y +  l * math.sin(hdg)
+    def __init__(self, filename, scene_scale):
+        super(Converter, self).__init__()
+        
+        self.opendrive = OpenDrive(filename)
+        self.scale = self.set_scale(scene_scale)
+        self.ways, self.nodes = self.convert()
 
 
-		elif geometry[0].tag == 'spiral': # sampling and insert nodes
-			end_x = start_x + length * math.cos(hdg)
-			end_y = start_y + length * math.sin(hdg)
-		return end_x, end_y
 
-	def arc_nodes(self, start_x, start_y, curvature,length, hdg, sampling_length = None):
-		nodes_xy = []
+    def set_scale(self, scene_scale):
+        # cast the bigger map into target boundary
+        tar_scale = scene_scale # target boundary is [-tar_scale,tar_scale]
+        x = []
+        y = []
+        length = []
 
-		if sampling_length is None:
-			total_sampling = 20
-		else:
-			total_sampling = int(length / sampling_length)
+        for road in self.opendrive.roads.values():
+            for geometry in road.plan_view:
+                x.append(geometry.x)
+                y.append(geometry.y)
+                length.append(geometry.length)
 
-		radius = 1/curvature
-		theta = length / radius
-		sampling_theta = theta / total_sampling
-		l = 2 * math.sin(sampling_theta/2) * radius
+        scale = max([(max(x) - min(x)), (max(y) - min(y))])/tar_scale
 
-		x = start_x
-		y = start_y
-		for i in range(total_sampling):
-			dx = l * math.cos(hdg) / self.scale
-			dy = l * math.sin(hdg) / self.scale
-			x = x + dx
-			y = y + dy
-			hdg = hdg + sampling_theta
-			nodes_xy.append([x,y])
-		return nodes_xy
+        if scale == 0:
+            scale = max(length)/tar_scale	
+            
+        return scale
+
+    def convert(self):
+        nodes = list()
+        node_id = 1
+        ways = dict()
+        for road_id,road in self.opendrive.roads.items():
+            way_nodes_id = list()
+            for record in road.plan_view:
+                for point in record.points:
+                    nodes.append(Node(node_id, point.x, point.y))
+                    way_nodes_id.append(node_id)
+                    node_id = node_id + 1
+            ways[road_id] = Way(road_id, way_nodes_id)
+            # print('insert' + str(id))
+
+        for road_id, road in self.opendrive.roads.items():
+            if road.successor is not None:
+                if road.successor.element_type == 'road':
+                    ways[road_id].nodes_id[-1] = ways[road.successor.element_id].nodes_id[0]
+                elif road.successor.element_type == 'junction':
+                    pass                  
+        return ways, nodes
+
+    def generate_osm(self, filename):
+        osm_attrib = {'version': "0.6", 'generator': "xodr_OSM_converter", 'copyright': "Simon",
+                        'attribution': "Simon", 'license': "GNU or whatever"}
+        osm_root = ET.Element('osm', osm_attrib)
+
+        bounds_attrib = {'minlat': '0', 'minlon': '0', 'maxlat': '1', 'maxlon': '1'}
+        ET.SubElement(osm_root, 'bounds', bounds_attrib)
+
+        for node in self.nodes:
+            node_attrib = {'id': str(node.id), 'visible': node.visible, 'version': '1', 'changeset': '1', 'timestamp': datetime.utcnow(
+            ).strftime('%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1', 'lat': str(node.lat/self.scale), 'lon': str(node.lon/self.scale)}
+            ET.SubElement(osm_root, 'node', node_attrib)
+
+        for way_key, way_value in self.ways.items():
+            way_attrib = {'id': str(way_key), 'visible': node.visible, 'version': '1', 'changeset': '1',
+                                'timestamp': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1'}
+            way_root = ET.SubElement(osm_root, 'way', way_attrib)
+            for way_node in way_value.nodes_id:
+                ET.SubElement(way_root, 'nd', {'ref': str(way_node)})
+            ET.SubElement(way_root, 'tag', {'k': "highway", 'v':'tertiary'})
+            ET.SubElement(way_root, 'tag', {'k': "name", 'v':'unknown road'})
+        tree = ET.ElementTree(osm_root)
+        tree.write(filename)
 
 
-	def set_scale(self, root, scene_scale):
-		# cast the bigger map into target boundary
-		tar_scale = scene_scale # target boundary is [-tar_scale,tar_scale]
-		x = []
-		y = []
-		for geometry in root.iter('geometry'):
-			x.append(float(geometry.attrib['x']))
-			y.append(float(geometry.attrib['y']))
+    # def show_road(self):
 
-		scale = max([(max(x) - min(x)), (max(y) - min(y))])/tar_scale
+    # 	for road in opendrive.roads.values():
+    # 		road.draw_road()
+    # 			# plt.xlim(-210, 210)
+    # 			# plt.ylim(-90, 90)
 
-		if scale == 0:
-			length = []
-			for geometry in root.iter('geometry'):
-				length.append(float(geometry.attrib['length']))
-			scale = max(length)/tar_scale	
-			
-		return scale
+    # 	q = Point(-10, 0)
+    # 	segment, right, left = opendrive.roadmap.closest_point(q)
+    # 	point = segment.min_point(q)
+    # 	distance = segment.min_distance(q)
+    # 	plt.plot(q.x, q.y, 'g+')
+    # 	plt.plot(point.x, point.y, 'r+')
+    # 	#plt.ylim((15, -15))
+    # 	#plt.xlim(198, 202)
+    # 	plt.gca().set_aspect('equal', adjustable='box')
+    # 	print(distance)
+    # 	print(right, left)
+    # 	plt.show()
 
-	def generate_osm(self, filename):
-		osm_attrib = {'version': "0.6", 'generator': "xodr_OSM_converter", 'copyright': "Simon",
-						'attribution': "Simon", 'license': "GNU or whatever"}
-		osm_root = ET.Element('osm', osm_attrib)
-
-		bounds_attrib = {'minlat': '0', 'minlon': '0', 'maxlat': '1', 'maxlon': '1'}
-		ET.SubElement(osm_root, 'bounds', bounds_attrib)
-
-		for node in self.nodes:
-			node_attrib = {'id': str(node.id), 'visible': node.visible, 'version': '1', 'changeset': '1', 'timestamp': datetime.utcnow(
-			).strftime('%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1', 'lat': str(node.lat), 'lon': str(node.lon)}
-			ET.SubElement(osm_root, 'node', node_attrib)
-
-		for way in self.ways:
-			wat_attrib = {'id': str(way.id), 'visible': node.visible, 'version': '1', 'changeset': '1',
-								'timestamp': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1'}
-			way_root = ET.SubElement(osm_root, 'way', wat_attrib)
-			for way_node in way.nodes_id:
-				ET.SubElement(way_root, 'nd', {'ref': str(way_node)})
-			ET.SubElement(way_root, 'tag', {'k': "highway", 'v':'tertiary'})
-			ET.SubElement(way_root, 'tag', {'k': "name", 'v':'unknown road'})
-		tree = ET.ElementTree(osm_root)
-		tree.write(filename)
-
-Converter('./xodr/simple.xodr', 0.01).generate_osm('./osm/simple.osm')
+Converter('./xodr/Crossing8Course.xodr', 0.01).generate_osm('./osm/Crossing8Course.osm')
