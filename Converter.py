@@ -49,30 +49,18 @@ class Converter(object):
         ways = dict()
         for road_id,road in self.opendrive.roads.items():
             way_nodes_id = set()
-            for record in road.plan_view:
+            for record in road.plan_view[:-1]:
 
 
-                for point in record.points[1:-1]:
+                for point in record.points[:-1]:
                     nodes.append(Node(node_id, point.x, point.y))
                     way_nodes_id.add(node_id)
                     node_id = node_id + 1
 
-                if road.predecessor is None:
-                    point = record.points[0]
-                    nodes.append(Node(node_id, point.x, point.y))
-                    way_nodes_id.add(node_id)
-                    node_id = node_id + 1
-                else:
-                    pass
-                
-                if road.successor is None:
-                    point = record.points[-1]
-                    nodes.append(Node(node_id, point.x, point.y))
-                    way_nodes_id.add(node_id)
-                    node_id = node_id + 1
-                else:
-                    pass
-
+            for point in road.plan_view[-1].points:
+                nodes.append(Node(node_id, point.x, point.y))
+                way_nodes_id.add(node_id)
+                node_id = node_id + 1
 
             ways[road_id] = Way(road_id, way_nodes_id)
             # print('insert' + str(id))
