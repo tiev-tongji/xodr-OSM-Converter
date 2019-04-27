@@ -50,44 +50,52 @@ class Converter(object):
         for road_id,road in self.opendrive.roads.items():
             way_nodes_id = list()
             for record in road.plan_view:
-                for point in record.points:
+                if road.predecessor is None:
+                    points = record.points[:-1]
+                else:
+                    points = record.points[1:-1]
+                
+                if road.successor is None:
+                    points.append(record.points[-1])
+
+                for point in points:
                     nodes.append(Node(node_id, point.x, point.y))
                     way_nodes_id.append(node_id)
                     node_id = node_id + 1
             ways[road_id] = Way(road_id, way_nodes_id)
             # print('insert' + str(id))
 
-        for road_id, road in self.opendrive.roads.items():
-            if road.successor is not None:
-                if road.successor.element_type == 'road':
-                    suc_begin_node = nodes[ways[road.successor.element_id].nodes_id[0]]
-                    suc_end_node = nodes[ways[road.successor.element_id].nodes_id[-1]]
+        # for road_id, road in self.opendrive.roads.items():
+        #     if road.successor is not None:
+        #         if road.successor.element_type == 'road':
+        #             suc_begin_node = nodes[ways[road.successor.element_id].nodes_id[0]]
+        #             suc_end_node = nodes[ways[road.successor.element_id].nodes_id[-1]]
                     
-                    end_node = nodes[ways[road_id].nodes_id[-1]]
-                    delta_begin = fabs(end_node.lat-suc_begin_node.lat) + fabs(end_node.lon - suc_begin_node.lon)
-                    delta_end = fabs(end_node.lat-suc_end_node.lat) + fabs(end_node.lon - suc_end_node.lon)
-                    if delta_begin < delta_end:
-                        ways[road_id].nodes_id[-1] = ways[road.successor.element_id].nodes_id[0]
-                    else:
-                        ways[road_id].nodes_id[-1] = ways[road.successor.element_id].nodes_id[-1]
+        #             end_node = nodes[ways[road_id].nodes_id[-1]]
+        #             delta_begin = fabs(end_node.lat-suc_begin_node.lat) + fabs(end_node.lon - suc_begin_node.lon)
+        #             delta_end = fabs(end_node.lat-suc_end_node.lat) + fabs(end_node.lon - suc_end_node.lon)
+        #             if delta_begin < delta_end:
+        #                 ways[road_id].nodes_id[-1] = ways[road.successor.element_id].nodes_id[0]
+        #             else:
+        #                 ways[road_id].nodes_id[-1] = ways[road.successor.element_id].nodes_id[-1]
                        
-                elif road.successor.element_type == 'junction':
-                    pass 
-            if road.predecessor is not None:
-                if road.predecessor.element_type == 'road':
-                    suc_begin_node = nodes[ways[road.predecessor.element_id].nodes_id[0]]
-                    suc_end_node = nodes[ways[road.predecessor.element_id].nodes_id[-1]]
+        #         elif road.successor.element_type == 'junction':
+        #             pass 
+        #     if road.predecessor is not None:
+        #         if road.predecessor.element_type == 'road':
+        #             suc_begin_node = nodes[ways[road.predecessor.element_id].nodes_id[0]]
+        #             suc_end_node = nodes[ways[road.predecessor.element_id].nodes_id[-1]]
                     
-                    begin_node = nodes[ways[road_id].nodes_id[-1]]
-                    delta_begin = fabs(begin_node.lat-suc_begin_node.lat) + fabs(begin_node.lon - suc_begin_node.lon)
-                    delta_end = fabs(begin_node.lat-suc_end_node.lat) + fabs(begin_node.lon - suc_end_node.lon)
-                    if delta_begin < delta_end:
-                        ways[road_id].nodes_id[0] = ways[road.predecessor.element_id].nodes_id[0]
-                    else:
-                        ways[road_id].nodes_id[0] = ways[road.predecessor.element_id].nodes_id[-1]
+        #             begin_node = nodes[ways[road_id].nodes_id[-1]]
+        #             delta_begin = fabs(begin_node.lat-suc_begin_node.lat) + fabs(begin_node.lon - suc_begin_node.lon)
+        #             delta_end = fabs(begin_node.lat-suc_end_node.lat) + fabs(begin_node.lon - suc_end_node.lon)
+        #             if delta_begin < delta_end:
+        #                 ways[road_id].nodes_id[0] = ways[road.predecessor.element_id].nodes_id[0]
+        #             else:
+        #                 ways[road_id].nodes_id[0] = ways[road.predecessor.element_id].nodes_id[-1]
                        
-                elif road.predecessor.element_type == 'junction':
-                    pass 
+        #         elif road.predecessor.element_type == 'junction':
+        #             pass 
         return ways, nodes
 
     def generate_osm(self, filename):
