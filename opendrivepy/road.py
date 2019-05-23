@@ -60,14 +60,14 @@ class Road(object):
         return False
 
     # WARNING: This only works so far with a fix width. Simplified for testing purposes
-    def get_left_width(self, n):
+    def get_left_width(self):
         width = 0
         for lane in self.lanes.lane_section.left:
             width += lane.width.a
 
         return width
 
-    def get_right_width(self, n):
+    def get_right_width(self):
         width = 0
         for lane in self.lanes.lane_section.right:
             width += lane.width.a

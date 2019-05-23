@@ -1,6 +1,6 @@
 from __future__ import division, absolute_import, print_function
 import xml.etree.ElementTree as ET
-from math import fabs
+from math import fabs, sqrt
 import matplotlib.pyplot as plt
 from datetime import datetime
 
@@ -9,7 +9,11 @@ from osmtype import Node,Way
 from opendrivepy.opendrive import OpenDrive
 from opendrivepy.point import Point
 
-
+# To avoid the conflict between nodes
+# Any points that is too close with peer ( < min distance ) are discarded
+min_distance = 0.01 
+def point_distance(pointa, pointb):
+    return sqrt((pointa.x - pointb.x) ** 2 + (pointa.y - pointb.y) ** 2)
 
 class Converter(object):
     """docstring for Converter"""
@@ -19,6 +23,7 @@ class Converter(object):
         
         self.opendrive = OpenDrive(filename)
         self.scale = self.set_scale(scene_scale)
+        print(self.scale)
         self.ways, self.nodes = self.convert()
 
 
@@ -36,66 +41,48 @@ class Converter(object):
                 y.append(geometry.y)
                 length.append(geometry.length)
 
-        scale = max([(max(x) - min(x)), (max(y) - min(y))])/tar_scale
+        scale = max([(max(x) - min(x)), (max(y) - min(y))]) / tar_scale
 
         if scale == 0:
-            scale = max(length)/tar_scale	
+            scale = max(length) / tar_scale	
             
         return scale
 
+    
     def convert(self):
         nodes = list()
         node_id = 0
         ways = dict()
         for road_id,road in self.opendrive.roads.items():
-            way_nodes_id = set()
-            for record in road.plan_view[:-1]:
+            way_nodes_id = list()
+            last_point = None
+            for record in road.plan_view:
+                print(road.get_left_width() + road.get_right_width())
 
+                for point in record.points:
+                    #print('\n')
+                    #print("node_id = " + str(node_id))
+                    if last_point is not None:
+                        if point_distance(last_point, point) > min_distance:
+                            print(point_distance(last_point, point))
+                            nodes.append(Node(node_id, point.x, point.y))
+                            way_nodes_id.append(node_id)
+                            node_id = node_id + 1
+                            last_point = point
+                        #else:
+                        #    print("discarded")
+                    else:
+                        #print("first point")
+                        nodes.append(Node(node_id, point.x, point.y))
+                        way_nodes_id.append(node_id)
+                        node_id = node_id + 1
+                        last_point = point
 
-                for point in record.points[:-1]:
-                    nodes.append(Node(node_id, point.x, point.y))
-                    way_nodes_id.add(node_id)
-                    node_id = node_id + 1
-
-            for point in road.plan_view[-1].points:
-                nodes.append(Node(node_id, point.x, point.y))
-                way_nodes_id.add(node_id)
-                node_id = node_id + 1
-
-            ways[road_id] = Way(road_id, way_nodes_id)
-            # print('insert' + str(id))
-
-        # for road_id, road in self.opendrive.roads.items():
-        #     if road.successor is not None:
-        #         if road.successor.element_type == 'road':
-        #             suc_begin_node = nodes[ways[road.successor.element_id].nodes_id[0]]
-        #             suc_end_node = nodes[ways[road.successor.element_id].nodes_id[-1]]
-                    
-        #             end_node = nodes[ways[road_id].nodes_id[-1]]
-        #             delta_begin = fabs(end_node.lat-suc_begin_node.lat) + fabs(end_node.lon - suc_begin_node.lon)
-        #             delta_end = fabs(end_node.lat-suc_end_node.lat) + fabs(end_node.lon - suc_end_node.lon)
-        #             if delta_begin < delta_end:
-        #                 ways[road_id].nodes_id[-1] = ways[road.successor.element_id].nodes_id[0]
-        #             else:
-        #                 ways[road_id].nodes_id[-1] = ways[road.successor.element_id].nodes_id[-1]
-                       
-        #         elif road.successor.element_type == 'junction':
-        #             pass 
-        #     if road.predecessor is not None:
-        #         if road.predecessor.element_type == 'road':
-        #             suc_begin_node = nodes[ways[road.predecessor.element_id].nodes_id[0]]
-        #             suc_end_node = nodes[ways[road.predecessor.element_id].nodes_id[-1]]
-                    
-        #             begin_node = nodes[ways[road_id].nodes_id[-1]]
-        #             delta_begin = fabs(begin_node.lat-suc_begin_node.lat) + fabs(begin_node.lon - suc_begin_node.lon)
-        #             delta_end = fabs(begin_node.lat-suc_end_node.lat) + fabs(begin_node.lon - suc_end_node.lon)
-        #             if delta_begin < delta_end:
-        #                 ways[road_id].nodes_id[0] = ways[road.predecessor.element_id].nodes_id[0]
-        #             else:
-        #                 ways[road_id].nodes_id[0] = ways[road.predecessor.element_id].nodes_id[-1]
-                       
-        #         elif road.predecessor.element_type == 'junction':
-        #             pass 
+            if len(way_nodes_id) > 0:
+                width = road.get_left_width() + road.get_right_width()
+                offset = width/2 - road.get_right_width()
+                ways[road_id] = Way(road_id,way_nodes_id,width, offset)
+           
         return ways, nodes
 
     def generate_osm(self, filename):
@@ -107,8 +94,7 @@ class Converter(object):
         ET.SubElement(osm_root, 'bounds', bounds_attrib)
 
         for node in self.nodes:
-            node_attrib = {'id': str(node.id), 'visible': node.visible, 'version': '1', 'changeset': '1', 'timestamp': datetime.utcnow(
-            ).strftime('%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1', 'lat': str(node.lat/self.scale), 'lon': str(node.lon/self.scale)}
+            node_attrib = {'id': str(node.id), 'visible': node.visible, 'version': '1', 'changeset': '1', 'timestamp': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1', 'lat': str(node.lat / self.scale), 'lon': str(node.lon / self.scale)}
             ET.SubElement(osm_root, 'node', node_attrib)
 
         for way_key, way_value in self.ways.items():
@@ -119,6 +105,10 @@ class Converter(object):
                 ET.SubElement(way_root, 'nd', {'ref': str(way_node)})
             ET.SubElement(way_root, 'tag', {'k': "highway", 'v':'tertiary'})
             ET.SubElement(way_root, 'tag', {'k': "name", 'v':'unknown road'})
+            ET.SubElement(way_root, 'tag', {'k': "streetWidth", 'v': str(way_value.width)})
+            ET.SubElement(way_root, 'tag', {'k': "streetOffset", 'v': str(way_value.offset)})
+            ET.SubElement(way_root, 'tag', {'k': "sidewalkWidthLeft", 'v': str(0)})
+            ET.SubElement(way_root, 'tag', {'k': "sidewalkWidthRight", 'v': str(0)})
         tree = ET.ElementTree(osm_root)
         tree.write(filename)
 
@@ -142,5 +132,4 @@ class Converter(object):
     # 	print(distance)
     # 	print(right, left)
     # 	plt.show()
-
-Converter('./xodr/Crossing8Course.xodr', 0.01).generate_osm('./osm/Crossing8Course.osm')
+Converter('./xodr/Town04.xodr', 0.01).generate_osm('./osm/Town04.osm')

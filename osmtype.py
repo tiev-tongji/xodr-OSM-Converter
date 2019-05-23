@@ -12,7 +12,7 @@ class Node(object):
 class Way(object):
     """docstring for Way"""
 
-    def __init__(self, way_id, nodes_id, successor_id = None):
+    def __init__(self, way_id, nodes_id, width,offset, successor_id = None):
         super(Way, self).__init__()
         self.id = way_id
         
@@ -23,5 +23,6 @@ class Way(object):
             self.has_successor = True
 
         self.nodes_id = nodes_id
-        self.width = 1
+        self.width = width
+        self.offset = offset
 
