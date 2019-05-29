@@ -132,4 +132,4 @@ class Converter(object):
     # 	print(distance)
     # 	print(right, left)
     # 	plt.show()
-Converter('./xodr/Town04.xodr', 0.01).generate_osm('./osm/Town04.osm')
+Converter('./xodr/Town05.xodr', 0.01).generate_osm('./osm/Town05.osm')
