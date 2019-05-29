@@ -57,14 +57,14 @@ class Converter(object):
             way_nodes_id = list()
             last_point = None
             for record in road.plan_view:
-                print(road.get_left_width() + road.get_right_width())
+                # print(road.get_left_width() + road.get_right_width())
 
                 for point in record.points:
                     #print('\n')
                     #print("node_id = " + str(node_id))
                     if last_point is not None:
                         if point_distance(last_point, point) > min_distance:
-                            print(point_distance(last_point, point))
+                            # print(point_distance(last_point, point))
                             nodes.append(Node(node_id, point.x, point.y))
                             way_nodes_id.append(node_id)
                             node_id = node_id + 1
