@@ -23,7 +23,7 @@ class Converter(object):
         
         self.opendrive = OpenDrive(filename)
         self.scale = self.set_scale(scene_scale)
-        print(self.scale)
+        # print(self.scale)
         self.ways, self.nodes = self.convert()
 
 
@@ -53,7 +53,9 @@ class Converter(object):
         nodes = list()
         node_id = 0
         ways = dict()
-        for road_id,road in self.opendrive.roads.items():
+        for road_id, road in self.opendrive.roads.items():
+            if road.is_connection:
+                continue
             way_nodes_id = list()
             last_point = None
             for record in road.plan_view:
@@ -82,6 +84,30 @@ class Converter(object):
                 width = road.get_left_width() + road.get_right_width()
                 offset = width/2 - road.get_right_width()
                 ways[road_id] = Way(road_id,way_nodes_id,width, offset)
+        
+        for junction in self.opendrive.junctions.values():
+            if len(junction.lane_link) == 4:
+                sum_x = 0
+                sum_y = 0
+                for incoming_road, contact_point in junction.lane_link:
+                    way_node_index = (0 if contact_point == 'start' else -1)
+                    node_index = ways[incoming_road].nodes_id[way_node_index]
+                    print(node_index)
+                    
+                    sum_x += nodes[node_index].lat
+                    sum_y += nodes[node_index].lon
+                    
+                    if contact_point == 'start':
+                        ways[incoming_road].nodes_id.insert(0, node_id)
+                    else:
+                        ways[incoming_road].nodes_id.append(node_id)
+                nodes.append(Node(node_id,sum_x / 4, sum_y / 4))
+                print("=" + str(node_id))
+                node_id = node_id + 1
+            
+
+
+
            
         return ways, nodes
 
@@ -95,7 +121,8 @@ class Converter(object):
 
         for node in self.nodes:
             node_attrib = {'id': str(node.id), 'visible': node.visible, 'version': '1', 'changeset': '1', 'timestamp': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1', 'lat': str(node.lat / self.scale), 'lon': str(node.lon / self.scale)}
-            ET.SubElement(osm_root, 'node', node_attrib)
+            node_root = ET.SubElement(osm_root, 'node', node_attrib)
+            ET.SubElement(node_root, 'tag', {'k': "type", 'v':'Junction'})
 
         for way_key, way_value in self.ways.items():
             way_attrib = {'id': str(way_key), 'visible': node.visible, 'version': '1', 'changeset': '1',
@@ -103,8 +130,8 @@ class Converter(object):
             way_root = ET.SubElement(osm_root, 'way', way_attrib)
             for way_node in way_value.nodes_id:
                 ET.SubElement(way_root, 'nd', {'ref': str(way_node)})
-            ET.SubElement(way_root, 'tag', {'k': "highway", 'v':'tertiary'})
-            ET.SubElement(way_root, 'tag', {'k': "name", 'v':'unknown road'})
+            # ET.SubElement(way_root, 'tag', {'k': "highway", 'v':'tertiary'})
+            ET.SubElement(way_root, 'tag', {'k': "name", 'v':'road'+str(way_value.id)})
             ET.SubElement(way_root, 'tag', {'k': "streetWidth", 'v': str(way_value.width)})
             ET.SubElement(way_root, 'tag', {'k': "streetOffset", 'v': str(way_value.offset)})
             ET.SubElement(way_root, 'tag', {'k': "sidewalkWidthLeft", 'v': str(0)})
@@ -132,4 +159,4 @@ class Converter(object):
     # 	print(distance)
     # 	print(right, left)
     # 	plt.show()
-Converter('./xodr/Town05.xodr', 0.01).generate_osm('./osm/Town05.osm')
+Converter('./xodr/Town03.xodr', 0.01).generate_osm('./osm/Town03.osm')

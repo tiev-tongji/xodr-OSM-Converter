@@ -8,6 +8,15 @@ class Junction(object):
         self.connections = list()
         self.priorities = list()
         self.controllers = list()
+        
+        self.lane_link = list()
+        self.added_link = list() # to avoid duplicate
+
+    def add_connection(self, new_connection):
+        self.connections.append(new_connection)
+        if new_connection.incoming_road not in self.added_link:
+            self.lane_link.append([new_connection.incoming_road,new_connection.contact_point])
+            self.added_link.append(new_connection.incoming_road)
 
 
 class Connection(object):
@@ -16,7 +25,6 @@ class Connection(object):
         self.incoming_road = incoming_road
         self.connecting_road = connecting_road
         self.contact_point = contact_point
-        self.lane_link = list()
 
 # TODO Add Priorities, JunctionGroups and LaneLinks
 

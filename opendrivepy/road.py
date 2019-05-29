@@ -12,6 +12,7 @@ class Road(object):
         self.predecessor = predecessor
         self.successor = successor
         self.type = list()
+        self.is_connection = False
         self.plan_view = plan_view
         self.elevation_profile = None
         self.lateral_profile = None
