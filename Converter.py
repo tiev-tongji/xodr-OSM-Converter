@@ -89,25 +89,34 @@ class Converter(object):
                 ways[road_id] = Way(road_id,way_nodes_id,width, offset, road.is_connection)
         
         for junction in self.opendrive.junctions.values():
-            if len(junction.lane_link) == 4:
+            if len(junction.lane_link) >= 4:
                 sum_x = 0
                 sum_y = 0
+                min_distance_to_center = 10
                 for incoming_road, connecting_road, contact_point in junction.lane_link:
                     way_node_index = (0 if contact_point == 'start' else -1)
                     node_index = ways[connecting_road].nodes_id[way_node_index]
+
+                    distance_to_start = node_distance(nodes[node_index], nodes[ways[incoming_road].nodes_id[0]])
+                    distance_to_end = node_distance(nodes[node_index], nodes[ways[incoming_road].nodes_id[-1]])
+                    # print(min([distance_to_end, distance_to_start]))
+                    if distance_to_start < distance_to_end:
+                        if distance_to_start < min_distance_to_center:
+                            min_distance_to_center = distance_to_start
+                        node_index = ways[incoming_road].nodes_id[0]
+                        ways[incoming_road].nodes_id.insert(0, node_id)
+                    else:
+                        if distance_to_end < min_distance_to_center:
+                            min_distance_to_center = distance_to_end
+                        node_index = ways[incoming_road].nodes_id[-1]
+                        ways[incoming_road].nodes_id.append(node_id)
                     print(node_index)
                     
                     sum_x += nodes[node_index].lat
                     sum_y += nodes[node_index].lon
                     
-
-                    distance_to_start = node_distance(nodes[node_index], nodes[ways[incoming_road].nodes_id[0]])
-                    distance_to_end = node_distance(nodes[node_index], nodes[ways[incoming_road].nodes_id[-1]])
-                    if distance_to_start < distance_to_end:
-                        ways[incoming_road].nodes_id.insert(0, node_id)
-                    else:
-                        ways[incoming_road].nodes_id.append(node_id)
-                nodes.append(Node(node_id,sum_x / 4, sum_y / 4))
+                # print('=' + str(min_distance_to_center))
+                nodes.append(Node(node_id,sum_x / 4.0, sum_y / 4.0, min_distance_to_center))
                 print("=" + str(node_id))
                 node_id = node_id + 1
             
@@ -128,7 +137,8 @@ class Converter(object):
         for node in self.nodes:
             node_attrib = {'id': str(node.id), 'visible': 'true', 'version': '1', 'changeset': '1', 'timestamp': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1', 'lat': str(node.lat / self.scale), 'lon': str(node.lon / self.scale)}
             node_root = ET.SubElement(osm_root, 'node', node_attrib)
-            # ET.SubElement(node_root, 'tag', {'k': "type", 'v':'Junction'})
+            ET.SubElement(node_root, 'tag', {'k': "type", 'v':'Crossing'})
+            # if node.min_arc_radius != 0 :
             ET.SubElement(node_root, 'tag', {'k': "minArcRadius", 'v': str(0)})
 
         for way_key, way_value in self.ways.items():
