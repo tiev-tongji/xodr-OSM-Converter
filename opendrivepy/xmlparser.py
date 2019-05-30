@@ -156,7 +156,7 @@ class XMLParser(object):
                 contact_point = connection.get('contactPoint')
                 new_connection = Connection(id, incoming_road, connecting_road, contact_point)
 
-                new_junction.connections.append(new_connection)
+                new_junction.add_connection(new_connection)
 
             ret[new_junction.id] = new_junction
 

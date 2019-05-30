@@ -14,6 +14,10 @@ class OpenDrive(object):
         self.roads = parser.parse_roads()
         self.controllers = list()
         self.junctions = parser.parse_junctions()
+
+        for junction in self.junctions.values():
+            for connection in junction.connections:
+                self.roads[connection.connecting_road].is_connection = True
         self.junction_groups = list()
         self.stations = list()
         self.roadmap = RoadMap(self.roads)
