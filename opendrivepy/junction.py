@@ -15,7 +15,7 @@ class Junction(object):
     def add_connection(self, new_connection):
         self.connections.append(new_connection)
         if new_connection.incoming_road not in self.added_link:
-            self.lane_link.append([new_connection.incoming_road,new_connection.contact_point])
+            self.lane_link.append([new_connection.incoming_road,new_connection.connecting_road,new_connection.contact_point])
             self.added_link.append(new_connection.incoming_road)
 
 
