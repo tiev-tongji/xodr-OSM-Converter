@@ -1,0 +1,11 @@
+
+syntax: regexp
+\.so$
+syntax: regexp
+^src/predicates\.egg-info$
+syntax: regexp
+^build$
+syntax: regexp
+^src/geompreds\.egg-info$
+syntax: regexp
+^dist$

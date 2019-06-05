@@ -8,6 +8,7 @@ from osmtype import Node,Way
 
 from opendrivepy.opendrive import OpenDrive
 from opendrivepy.point import Point
+from geompreds import orient2d, incircle
 
 # To avoid the conflict between nodes
 # Any points that is too close with peer ( < min distance ) are discarded
@@ -18,16 +19,45 @@ def point_distance(pointa, pointb):
 def node_distance(nodea, nodeb):
     return sqrt((nodea.lat - nodeb.lat) ** 2 + (nodea.lon - nodeb.lon) ** 2)
 
-def line_parallel(line1_node1, line1_node2, line2_node1, line2_node2):
-    a = line1_node2.lat-line1_node1.lat
-    b = line2_node2.lat-line2_node1.lat
-    c = line1_node2.lon-line1_node1.lon
-    d = line2_node2.lon-line2_node1.lon
-    g = line2_node1.lat-line1_node1.lat
-    h = line2_node1.lon-line1_node1.lon
-    f = a*d-b*c
-    print(f)
-    return (fabs(f) < 1e-5)
+def line_cross(line1, line2):
+    x1=line1[0].lat
+    y1=line1[0].lon
+    x2=line1[1].lat
+    y2=line1[1].lon
+    
+    x3=line2[0].lat
+    y3=line2[0].lon
+    x4=line2[1].lat
+    y4=line2[1].lon
+
+    k1=(y2-y1)*1.0/(x2-x1)
+    b1=y1*1.0-x1*k1*1.0
+    if (x4-x3)==0:
+        #L2直线斜率不存在操作
+        k2=None
+        b2=0
+    else:
+        k2=(y4-y3)*1.0/(x4-x3)
+        #斜率存在操作
+        b2=y3*1.0-x3*k2*1.0
+    if k2==None:
+        x=x3
+    else:
+        x=(b2-b1)*1.0/(k1-k2)
+    y=k1*x*1.0+b1*1.0
+    return [x,y]
+
+def orient_node(nodea, nodeb, nodec):
+    return orient2d( (nodea.lat, nodea.lon), (nodeb.lat, nodeb.lon), (nodec.lat, nodec.lon))
+
+def find_diagonal(nodes):
+    if orient_node(nodes[0], nodes[1], nodes[2]) * orient_node(nodes[3], nodes[1], nodes[2]) < 0:
+        return 3
+    elif orient_node(nodes[0], nodes[1], nodes[3]) * orient_node(nodes[2], nodes[1], nodes[3]) < 0:
+        return 2
+    else:
+        return 1
+
     
 
 class Converter(object):
@@ -107,61 +137,119 @@ class Converter(object):
                 sum_x = 0
                 sum_y = 0
 
-                is_tshape_junction = False
+                is_Tshape_junction = False
+                is_Xshape_junction = False
+                junction_center = None
+
                 if len(junction.lane_link) == 3:
-                    line_cnt = 0
+                    lane_link = junction.lane_link
+                    line1_nodes = list()
+                    line2_nodes = list()
                     for connection in junction.connections:
-                        if ways[connection.connecting_road].style != 'line':
-                            continue
-                        line_cnt += 1
-                        # print(connection.connecting_road, ways[connection.connecting_road].style)
-                        node_index = ways[connection.connecting_road].nodes_id[0]
-                        sum_x += nodes[node_index].lat
-                        sum_y += nodes[node_index].lon
-                        node_index = ways[connection.connecting_road].nodes_id[-1]
-                        sum_x += nodes[node_index].lat
-                        sum_y += nodes[node_index].lon
-                    if line_cnt != 2:
-                        sum_x = 0
-                        sum_y = 0
-                        is_tshape_junction = False
-                    else:
-                        is_tshape_junction = True
+                        # add the contact point of '--' of a T junction
+                        if ways[connection.connecting_road].style == 'line':
+                            incoming_road = connection.incoming_road
+                            connecting_road = connection.connecting_road
+                            contact_point = connection.contact_point
+
+                            way_node_index = (0 if contact_point == 'start' else -1)
+                            node_index = ways[connecting_road].nodes_id[way_node_index]
+
+                            distance_to_start = node_distance(nodes[node_index], nodes[ways[incoming_road].nodes_id[0]])
+                            distance_to_end = node_distance(nodes[node_index], nodes[ways[incoming_road].nodes_id[-1]])
+
+                            if distance_to_start < distance_to_end:
+                                line1_nodes.append(nodes[ways[incoming_road].nodes_id[0]])
+                                ways[incoming_road].nodes_id.insert(0, node_id)
+                            else:
+                                line1_nodes.append(nodes[ways[incoming_road].nodes_id[-1]])
+                                ways[incoming_road].nodes_id.append(node_id)
+                            for i in range(len(lane_link)):
+                                if lane_link[i][0] == incoming_road:
+                                    del lane_link[i]
+                                    break
+
+                    if len(line1_nodes) >= 2:
+                        is_Tshape_junction = True
+                        # add two points of '|' of a T junction
+                        for incoming_road, connecting_road, contact_point in lane_link:
+                            way_node_index = (0 if contact_point == 'start' else -1)
+                            node_index = ways[connecting_road].nodes_id[way_node_index]
+
+                            distance_to_start = node_distance(nodes[node_index], nodes[ways[incoming_road].nodes_id[0]])
+                            distance_to_end = node_distance(nodes[node_index], nodes[ways[incoming_road].nodes_id[-1]])
+                            
+                            if distance_to_start < distance_to_end:
+                                line2_nodes.append(nodes[ways[incoming_road].nodes_id[0]])
+                                line2_nodes.append(nodes[ways[incoming_road].nodes_id[1]])
+                                ways[incoming_road].nodes_id.insert(0, node_id)
+                            else:
+                                line2_nodes.append(nodes[ways[incoming_road].nodes_id[-1]])
+                                line2_nodes.append(nodes[ways[incoming_road].nodes_id[-2]])
+                                ways[incoming_road].nodes_id.append(node_id)
+
+                        cross_point = line_cross(line1_nodes, line2_nodes)
+                        nodes.append(Node(node_id, cross_point[0], cross_point[1], 10))
+                        node_id = node_id + 1
 
 
-                min_distance_to_center = 10
-                for incoming_road, connecting_road, contact_point in junction.lane_link:
-                    way_node_index = (0 if contact_point == 'start' else -1)
-                    node_index = ways[connecting_road].nodes_id[way_node_index]
+                if len(junction.lane_link) == 4:
+                    is_Xshape_junction = True
+                    line_nodes = list()
+                    for incoming_road, connecting_road, contact_point in junction.lane_link:
+                        way_node_index = (0 if contact_point == 'start' else -1)
+                        node_index = ways[connecting_road].nodes_id[way_node_index]
 
-                    # add new node into incoming roads
-                    distance_to_start = node_distance(nodes[node_index], nodes[ways[incoming_road].nodes_id[0]])
-                    distance_to_end = node_distance(nodes[node_index], nodes[ways[incoming_road].nodes_id[-1]])
-                    # print(min([distance_to_end, distance_to_start]))
-                    if distance_to_start < distance_to_end:
-                        if distance_to_start < min_distance_to_center:
-                            min_distance_to_center = distance_to_start
-                        node_index = ways[incoming_road].nodes_id[0]
-                        ways[incoming_road].nodes_id.insert(0, node_id)
-                    else:
-                        if distance_to_end < min_distance_to_center:
-                            min_distance_to_center = distance_to_end
-                        node_index = ways[incoming_road].nodes_id[-1]
-                        ways[incoming_road].nodes_id.append(node_id)
-                    print(node_index)
-
-                    # to calculate the center point of junctions
-                    if not is_tshape_junction:
-                        sum_x += nodes[node_index].lat
-                        sum_y += nodes[node_index].lon
+                        # add new node into incoming roads
+                        distance_to_start = node_distance(nodes[node_index], nodes[ways[incoming_road].nodes_id[0]])
+                        distance_to_end = node_distance(nodes[node_index], nodes[ways[incoming_road].nodes_id[-1]])
+                        # print(min([distance_to_end, distance_to_start]))
+                        if distance_to_start < distance_to_end:
+                            line_nodes.append(nodes[ways[incoming_road].nodes_id[0]])
+                            ways[incoming_road].nodes_id.insert(0, node_id)
+                        else:
+                            line_nodes.append(nodes[ways[incoming_road].nodes_id[-1]])
+                            ways[incoming_road].nodes_id.append(node_id)
                     
-                # print('=' + str(min_distance_to_center))
-                if is_tshape_junction:
-                    nodes.append(Node(node_id,sum_x / 4, sum_y / 4, min_distance_to_center))
-                else:
+                    diag_nodes = find_diagonal(line_nodes)
+                    if diag_nodes != 1:
+                        line_nodes[1], line_nodes[diag_nodes] = line_nodes[diag_nodes], line_nodes[1]
+                    cross_point = line_cross(line_nodes[:2], line_nodes[2:])
+                    nodes.append(Node(node_id, cross_point[0], cross_point[1], 10))
+                    node_id = node_id + 1
+
+                if not is_Tshape_junction and not is_Xshape_junction:
+
+                    min_distance_to_center = 10
+                    for incoming_road, connecting_road, contact_point in junction.lane_link:
+                        way_node_index = (0 if contact_point == 'start' else -1)
+                        node_index = ways[connecting_road].nodes_id[way_node_index]
+
+                        # add new node into incoming roads
+                        distance_to_start = node_distance(nodes[node_index], nodes[ways[incoming_road].nodes_id[0]])
+                        distance_to_end = node_distance(nodes[node_index], nodes[ways[incoming_road].nodes_id[-1]])
+                        # print(min([distance_to_end, distance_to_start]))
+                        if distance_to_start < distance_to_end:
+                            if distance_to_start < min_distance_to_center:
+                                min_distance_to_center = distance_to_start
+                            node_index = ways[incoming_road].nodes_id[0]
+                            ways[incoming_road].nodes_id.insert(0, node_id)
+                        else:
+                            if distance_to_end < min_distance_to_center:
+                                min_distance_to_center = distance_to_end
+                            node_index = ways[incoming_road].nodes_id[-1]
+                            ways[incoming_road].nodes_id.append(node_id)
+                        print(node_index)
+
+                        # to calculate the center point of junctions
+                        if not is_Tshape_junction:
+                            sum_x += nodes[node_index].lat
+                            sum_y += nodes[node_index].lon
+                        
+                    # print('=' + str(min_distance_to_center))
                     nodes.append(Node(node_id,sum_x / len(junction.lane_link), sum_y / len(junction.lane_link), min_distance_to_center))
-                print("=" + str(node_id))
-                node_id = node_id + 1
+                    print("=" + str(node_id))
+                    node_id = node_id + 1
             
 
 
