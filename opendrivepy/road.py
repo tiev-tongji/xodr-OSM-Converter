@@ -17,7 +17,7 @@ class Road(object):
 
         self.style = plan_view[0].style
         for view in plan_view[1:]:
-            if view.style != self.style and view.length > 1e-4:
+            if view.style != self.style and view.length > 1e-2:
                 self.style = 'mix'
                 break
         self.elevation_profile = None

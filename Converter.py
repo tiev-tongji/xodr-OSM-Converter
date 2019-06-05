@@ -160,10 +160,12 @@ class Converter(object):
 
                             if distance_to_start < distance_to_end:
                                 line1_nodes.append(nodes[ways[incoming_road].nodes_id[0]])
+                                # ways[incoming_road].nodes_id.insert(0, node_id)
                                 ways[incoming_road].nodes_id[0] = node_id
                             else:
                                 line1_nodes.append(nodes[ways[incoming_road].nodes_id[-1]])
-                                ways[incoming_road].nodes_id.append(node_id)
+                                # ways[incoming_road].nodes_id.append(node_id)
+                                ways[incoming_road].nodes_id[-1] = node_id
                             for i in range(len(lane_link)):
                                 if lane_link[i][0] == incoming_road:
                                     del lane_link[i]
@@ -188,6 +190,11 @@ class Converter(object):
                                 line2_nodes.append(nodes[ways[incoming_road].nodes_id[-2]])
                                 ways[incoming_road].nodes_id[-1] = node_id
 
+                        # print(line1_nodes[0].id)
+                        # print(line1_nodes[1].id)
+                        # print(line2_nodes[0].id)
+                        # print(line2_nodes[1].id)
+                        # print('=' + str(node_id))
                         cross_point = line_cross(line1_nodes, line2_nodes)
                         nodes.append(Node(node_id, cross_point[0], cross_point[1], 10))
                         node_id = node_id + 1
@@ -289,4 +296,4 @@ class Converter(object):
         tree = ET.ElementTree(osm_root)
         tree.write(filename)
 
-Converter('./xodr/Town05.xodr', 0.01).generate_osm('./osm/Town05.osm')
+Converter('./xodr/Town02.xodr', 0.01).generate_osm('./osm/Town02.osm')
