@@ -160,7 +160,7 @@ class Converter(object):
 
                             if distance_to_start < distance_to_end:
                                 line1_nodes.append(nodes[ways[incoming_road].nodes_id[0]])
-                                ways[incoming_road].nodes_id.insert(0, node_id)
+                                ways[incoming_road].nodes_id[0] = node_id
                             else:
                                 line1_nodes.append(nodes[ways[incoming_road].nodes_id[-1]])
                                 ways[incoming_road].nodes_id.append(node_id)
@@ -182,11 +182,11 @@ class Converter(object):
                             if distance_to_start < distance_to_end:
                                 line2_nodes.append(nodes[ways[incoming_road].nodes_id[0]])
                                 line2_nodes.append(nodes[ways[incoming_road].nodes_id[1]])
-                                ways[incoming_road].nodes_id.insert(0, node_id)
+                                ways[incoming_road].nodes_id[0] = node_id
                             else:
                                 line2_nodes.append(nodes[ways[incoming_road].nodes_id[-1]])
                                 line2_nodes.append(nodes[ways[incoming_road].nodes_id[-2]])
-                                ways[incoming_road].nodes_id.append(node_id)
+                                ways[incoming_road].nodes_id[-1] = node_id
 
                         cross_point = line_cross(line1_nodes, line2_nodes)
                         nodes.append(Node(node_id, cross_point[0], cross_point[1], 10))
@@ -206,10 +206,10 @@ class Converter(object):
                         # print(min([distance_to_end, distance_to_start]))
                         if distance_to_start < distance_to_end:
                             line_nodes.append(nodes[ways[incoming_road].nodes_id[0]])
-                            ways[incoming_road].nodes_id.insert(0, node_id)
+                            ways[incoming_road].nodes_id[0] = node_id
                         else:
                             line_nodes.append(nodes[ways[incoming_road].nodes_id[-1]])
-                            ways[incoming_road].nodes_id.append(node_id)
+                            ways[incoming_road].nodes_id[-1] = node_id
                     
                     diag_nodes = find_diagonal(line_nodes)
                     if diag_nodes != 1:
@@ -232,19 +232,19 @@ class Converter(object):
                         if distance_to_start < distance_to_end:
                             if distance_to_start < min_distance_to_center:
                                 min_distance_to_center = distance_to_start
-                            node_index = ways[incoming_road].nodes_id[0]
-                            ways[incoming_road].nodes_id.insert(0, node_id)
+                            sub_node = nodes[ways[incoming_road].nodes_id[0]]
+                            ways[incoming_road].nodes_id[0] = node_id
                         else:
                             if distance_to_end < min_distance_to_center:
                                 min_distance_to_center = distance_to_end
-                            node_index = ways[incoming_road].nodes_id[-1]
-                            ways[incoming_road].nodes_id.append(node_id)
+                            sub_node = nodes[ways[incoming_road].nodes_id[-1]]
+                            ways[incoming_road].nodes_id[-1] = node_id
                         print(node_index)
 
                         # to calculate the center point of junctions
                         if not is_Tshape_junction:
-                            sum_x += nodes[node_index].lat
-                            sum_y += nodes[node_index].lon
+                            sum_x += sub_node.lat
+                            sum_y += sub_node.lon
                         
                     # print('=' + str(min_distance_to_center))
                     nodes.append(Node(node_id,sum_x / len(junction.lane_link), sum_y / len(junction.lane_link), min_distance_to_center))
@@ -309,4 +309,4 @@ class Converter(object):
     # 	print(distance)
     # 	print(right, left)
     # 	plt.show()
-Converter('./xodr/Town03.xodr', 0.01).generate_osm('./osm/Town03.osm')
+Converter('./xodr/Town05.xodr', 0.01).generate_osm('./osm/Town05.osm')
