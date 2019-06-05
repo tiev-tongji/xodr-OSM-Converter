@@ -17,18 +17,18 @@ def point_distance(pointa, pointb):
     return sqrt((pointa.x - pointb.x) ** 2 + (pointa.y - pointb.y) ** 2)
 
 def node_distance(nodea, nodeb):
-    return sqrt((nodea.lat - nodeb.lat) ** 2 + (nodea.lon - nodeb.lon) ** 2)
+    return sqrt((nodea.x - nodeb.x) ** 2 + (nodea.y - nodeb.y) ** 2)
 
 def line_cross(line1, line2):
-    x1=line1[0].lat
-    y1=line1[0].lon
-    x2=line1[1].lat
-    y2=line1[1].lon
+    x1=line1[0].x
+    y1=line1[0].y
+    x2=line1[1].x
+    y2=line1[1].y
     
-    x3=line2[0].lat
-    y3=line2[0].lon
-    x4=line2[1].lat
-    y4=line2[1].lon
+    x3=line2[0].x
+    y3=line2[0].y
+    x4=line2[1].x
+    y4=line2[1].y
 
     k1=(y2-y1)*1.0/(x2-x1)
     b1=y1*1.0-x1*k1*1.0
@@ -48,7 +48,7 @@ def line_cross(line1, line2):
     return [x,y]
 
 def orient_node(nodea, nodeb, nodec):
-    return orient2d( (nodea.lat, nodea.lon), (nodeb.lat, nodeb.lon), (nodec.lat, nodec.lon))
+    return orient2d( (nodea.x, nodea.y), (nodeb.x, nodeb.y), (nodec.x, nodec.y))
 
 def find_diagonal(nodes):
     if orient_node(nodes[0], nodes[1], nodes[2]) * orient_node(nodes[3], nodes[1], nodes[2]) < 0:
@@ -239,16 +239,16 @@ class Converter(object):
                                 min_distance_to_center = distance_to_end
                             sub_node = nodes[ways[incoming_road].nodes_id[-1]]
                             ways[incoming_road].nodes_id[-1] = node_id
-                        print(node_index)
+                        # print(node_index)
 
                         # to calculate the center point of junctions
                         if not is_Tshape_junction:
-                            sum_x += sub_node.lat
-                            sum_y += sub_node.lon
+                            sum_x += sub_node.x
+                            sum_y += sub_node.y
                         
                     # print('=' + str(min_distance_to_center))
                     nodes.append(Node(node_id,sum_x / len(junction.lane_link), sum_y / len(junction.lane_link), min_distance_to_center))
-                    print("=" + str(node_id))
+                    # print("=" + str(node_id))
                     node_id = node_id + 1
             
 
@@ -266,7 +266,7 @@ class Converter(object):
         ET.SubElement(osm_root, 'bounds', bounds_attrib)
 
         for node in self.nodes:
-            node_attrib = {'id': str(node.id), 'visible': 'true', 'version': '1', 'changeset': '1', 'timestamp': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1', 'lat': str(node.lat / self.scale), 'lon': str(node.lon / self.scale)}
+            node_attrib = {'id': str(node.id), 'visible': 'true', 'version': '1', 'changeset': '1', 'timestamp': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1', 'lat': str(node.x / self.scale), 'lon': str(node.y / self.scale)}
             node_root = ET.SubElement(osm_root, 'node', node_attrib)
             ET.SubElement(node_root, 'tag', {'k': "type", 'v':'Crossing'})
             # if node.min_arc_radius != 0 :
