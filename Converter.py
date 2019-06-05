@@ -142,8 +142,8 @@ class Converter(object):
             ET.SubElement(node_root, 'tag', {'k': "minArcRadius", 'v': str(0)})
 
         for way_key, way_value in self.ways.items():
-            if way_value.is_connecting:
-                continue
+            # if way_value.is_connecting:
+            #     continue
             way_attrib = {'id': str(way_key),'version': '1', 'changeset': '1',
                                 'timestamp': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1'}
             way_root = ET.SubElement(osm_root, 'way', way_attrib)
