@@ -16,7 +16,7 @@ class RoadGeometry(object):
         self.hdg = hdg
         self.length = length
 
-        self.style = style
+        self.style = style        
         self.points = list()
         self.segments = list()
 
@@ -30,7 +30,7 @@ class RoadGeometry(object):
 
 class RoadLine(RoadGeometry):
     def __init__(self, s, x, y, hdg, length):
-        super(RoadLine, self).__init__(s, x, y, hdg, length, style='b-')
+        super(RoadLine, self).__init__(s, x, y, hdg, length, style='line')
         self.generate_coords()
         self.generate_segments()
 
@@ -43,7 +43,7 @@ class RoadLine(RoadGeometry):
 
 class RoadArc(RoadGeometry):
     def __init__(self, s, x, y, hdg, length, curvature):
-        super(RoadArc, self).__init__(s, x, y, hdg, length, 'r-')
+        super(RoadArc, self).__init__(s, x, y, hdg, length, 'arc')
         self.curvature = curvature
         self.generate_coords(int(ceil(self.length) + 1))
         self.generate_segments()
@@ -79,7 +79,7 @@ class RoadArc(RoadGeometry):
 
 class RoadSpiral(RoadGeometry):
     def __init__(self, s, x, y, hdg, length, curvstart, curvend):
-        super(RoadSpiral, self).__init__(s, x, y, hdg, length, 'g-')
+        super(RoadSpiral, self).__init__(s, x, y, hdg, length, 'spiral')
         self.curvStart = curvstart
         self.curvEnd = curvend
         self.cDot = (curvend-curvstart)/length

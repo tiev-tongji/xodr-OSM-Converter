@@ -12,7 +12,7 @@ class Node(object):
 class Way(object):
     """docstring for Way"""
 
-    def __init__(self, way_id,nodes_id, width,offset,is_connecting):
+    def __init__(self, way_id,nodes_id, width,offset,is_connecting, style):
         super(Way, self).__init__()
         self.id = way_id
         self.is_connecting = is_connecting
@@ -26,4 +26,5 @@ class Way(object):
         self.nodes_id = nodes_id
         self.width = width
         self.offset = offset
+        self.style = style
 

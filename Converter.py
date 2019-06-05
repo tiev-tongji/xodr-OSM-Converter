@@ -18,6 +18,18 @@ def point_distance(pointa, pointb):
 def node_distance(nodea, nodeb):
     return sqrt((nodea.lat - nodeb.lat) ** 2 + (nodea.lon - nodeb.lon) ** 2)
 
+def line_parallel(line1_node1, line1_node2, line2_node1, line2_node2):
+    a = line1_node2.lat-line1_node1.lat
+    b = line2_node2.lat-line2_node1.lat
+    c = line1_node2.lon-line1_node1.lon
+    d = line2_node2.lon-line2_node1.lon
+    g = line2_node1.lat-line1_node1.lat
+    h = line2_node1.lon-line1_node1.lon
+    f = a*d-b*c
+    print(f)
+    return (fabs(f) < 1e-5)
+    
+
 class Converter(object):
     """docstring for Converter"""
 
@@ -86,17 +98,43 @@ class Converter(object):
             if len(way_nodes_id) > 0:
                 width = road.get_left_width() + road.get_right_width()
                 offset = width/2 - road.get_right_width()
-                ways[road_id] = Way(road_id,way_nodes_id,width, offset, road.is_connection)
+                ways[road_id] = Way(road_id,way_nodes_id,width, offset, road.is_connection, road.style)
         
         for junction in self.opendrive.junctions.values():
             if len(junction.lane_link) >= 2:
+                # print(len(junction.lane_link))
+
                 sum_x = 0
                 sum_y = 0
+
+                is_tshape_junction = False
+                if len(junction.lane_link) == 3:
+                    line_cnt = 0
+                    for connection in junction.connections:
+                        if ways[connection.connecting_road].style != 'line':
+                            continue
+                        line_cnt += 1
+                        # print(connection.connecting_road, ways[connection.connecting_road].style)
+                        node_index = ways[connection.connecting_road].nodes_id[0]
+                        sum_x += nodes[node_index].lat
+                        sum_y += nodes[node_index].lon
+                        node_index = ways[connection.connecting_road].nodes_id[-1]
+                        sum_x += nodes[node_index].lat
+                        sum_y += nodes[node_index].lon
+                    if line_cnt != 2:
+                        sum_x = 0
+                        sum_y = 0
+                        is_tshape_junction = False
+                    else:
+                        is_tshape_junction = True
+
+
                 min_distance_to_center = 10
                 for incoming_road, connecting_road, contact_point in junction.lane_link:
                     way_node_index = (0 if contact_point == 'start' else -1)
                     node_index = ways[connecting_road].nodes_id[way_node_index]
 
+                    # add new node into incoming roads
                     distance_to_start = node_distance(nodes[node_index], nodes[ways[incoming_road].nodes_id[0]])
                     distance_to_end = node_distance(nodes[node_index], nodes[ways[incoming_road].nodes_id[-1]])
                     # print(min([distance_to_end, distance_to_start]))
@@ -111,12 +149,17 @@ class Converter(object):
                         node_index = ways[incoming_road].nodes_id[-1]
                         ways[incoming_road].nodes_id.append(node_id)
                     print(node_index)
-                    
-                    sum_x += nodes[node_index].lat
-                    sum_y += nodes[node_index].lon
+
+                    # to calculate the center point of junctions
+                    if not is_tshape_junction:
+                        sum_x += nodes[node_index].lat
+                        sum_y += nodes[node_index].lon
                     
                 # print('=' + str(min_distance_to_center))
-                nodes.append(Node(node_id,sum_x / len(junction.lane_link), sum_y / len(junction.lane_link), min_distance_to_center))
+                if is_tshape_junction:
+                    nodes.append(Node(node_id,sum_x / 4, sum_y / 4, min_distance_to_center))
+                else:
+                    nodes.append(Node(node_id,sum_x / len(junction.lane_link), sum_y / len(junction.lane_link), min_distance_to_center))
                 print("=" + str(node_id))
                 node_id = node_id + 1
             
@@ -178,4 +221,4 @@ class Converter(object):
     # 	print(distance)
     # 	print(right, left)
     # 	plt.show()
-Converter('./xodr/Town01.xodr', 0.01).generate_osm('./osm/Town01.osm')
+Converter('./xodr/Town03.xodr', 0.01).generate_osm('./osm/Town03.osm')

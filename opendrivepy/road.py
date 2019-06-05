@@ -14,6 +14,12 @@ class Road(object):
         self.type = list()
         self.is_connection = False
         self.plan_view = plan_view
+
+        self.style = plan_view[0].style
+        for view in plan_view[1:]:
+            if view.style != self.style:
+                self.style = 'mix'
+                break
         self.elevation_profile = None
         self.lateral_profile = None
         self.lanes = lanes
