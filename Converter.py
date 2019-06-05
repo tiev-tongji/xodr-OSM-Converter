@@ -89,7 +89,7 @@ class Converter(object):
                 ways[road_id] = Way(road_id,way_nodes_id,width, offset, road.is_connection)
         
         for junction in self.opendrive.junctions.values():
-            if len(junction.lane_link) >= 4:
+            if len(junction.lane_link) >= 2:
                 sum_x = 0
                 sum_y = 0
                 min_distance_to_center = 10
@@ -116,7 +116,7 @@ class Converter(object):
                     sum_y += nodes[node_index].lon
                     
                 # print('=' + str(min_distance_to_center))
-                nodes.append(Node(node_id,sum_x / 4.0, sum_y / 4.0, min_distance_to_center))
+                nodes.append(Node(node_id,sum_x / len(junction.lane_link), sum_y / len(junction.lane_link), min_distance_to_center))
                 print("=" + str(node_id))
                 node_id = node_id + 1
             
@@ -178,4 +178,4 @@ class Converter(object):
     # 	print(distance)
     # 	print(right, left)
     # 	plt.show()
-Converter('./xodr/Town03.xodr', 0.01).generate_osm('./osm/Town03.osm')
+Converter('./xodr/Town01.xodr', 0.01).generate_osm('./osm/Town01.osm')
