@@ -289,24 +289,4 @@ class Converter(object):
         tree = ET.ElementTree(osm_root)
         tree.write(filename)
 
-
-    # def show_road(self):
-
-    # 	for road in opendrive.roads.values():
-    # 		road.draw_road()
-    # 			# plt.xlim(-210, 210)
-    # 			# plt.ylim(-90, 90)
-
-    # 	q = Point(-10, 0)
-    # 	segment, right, left = opendrive.roadmap.closest_point(q)
-    # 	point = segment.min_point(q)
-    # 	distance = segment.min_distance(q)
-    # 	plt.plot(q.x, q.y, 'g+')
-    # 	plt.plot(point.x, point.y, 'r+')
-    # 	#plt.ylim((15, -15))
-    # 	#plt.xlim(198, 202)
-    # 	plt.gca().set_aspect('equal', adjustable='box')
-    # 	print(distance)
-    # 	print(right, left)
-    # 	plt.show()
 Converter('./xodr/Town05.xodr', 0.01).generate_osm('./osm/Town05.osm')
