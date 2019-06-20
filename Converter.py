@@ -10,7 +10,7 @@ from tqdm import tqdm
 from pyqtree import Index
 
 from osmtype import *
-from Util import *
+from Utils import *
 
 # To avoid the conflict between nodes
 # Any points that is too close with peer ( < min distance ) are discarded
