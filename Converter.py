@@ -4,16 +4,18 @@ from math import fabs, sqrt
 import matplotlib.pyplot as plt
 from datetime import datetime
 
-from osmtype import *
-
 from opendrivepy.opendrive import OpenDrive
 from opendrivepy.point import Point
+from tqdm import tqdm
+
+from osmtype import *
 from Util import *
 
 # To avoid the conflict between nodes
 # Any points that is too close with peer ( < min distance ) are discarded
 min_distance = 0.01
 MAX_ARC_RADIUS = 50
+
 
 class Converter(object):
     """docstring for Converter"""
@@ -55,56 +57,54 @@ class Converter(object):
 
     def convert(self):
         # 1. convert all roads into nodes+ways
-        for road_id, road in self.opendrive.roads.items():
-            way_nodes_id = list()
+        with tqdm(total=len(self.opendrive.roads), ascii=True) as pbar:
+            for road_id, road in self.opendrive.roads.items():
+                pbar.set_description("Processing road_id=%s" % road_id)
+                way_nodes_id = list()
 
-            # a road is composed by serval plan views
-            for record in road.plan_view:
-                
-                # add all points of a road into nodes list
-                for point in record.points:
-                    found = False # to avoid duplicate
-                   
-                    # search for dup
-                    for node in self.nodes:
-                        if point_distance(node, point) < min_distance:
-                            found = True
-                            break
+                # a road is composed by serval plan views
+                for record in road.plan_view:
 
-                    if found: 
-                        # if the node is quite close to an existing node, merge them
-                        way_nodes_id.append(node.id)
-                    else: 
-                        # add a new node
-                        self.nodes.append(Node(self.node_id, point.x, point.y))
-                        way_nodes_id.append(self.node_id)
-                        self.node_id = self.node_id + 1
+                    # add all points of a road into nodes list
+                    for point in record.points:
+                        found = False  # to avoid duplicate
 
-            # set the width of ways
-            if len(way_nodes_id) > 0:
-                width = road.get_left_width() + road.get_right_width()
-                offset = width/2 - road.get_right_width()
-                self.ways[road_id] = Way(
-                    road_id, way_nodes_id, width, offset, road.is_connection, road.style)
-        
+                        # search for dup
+                        for node in self.nodes:
+                            if point_distance(node, point) < min_distance:
+                                found = True
+                                break
+
+                        if found:
+                            # if the node is quite close to an existing node, merge them
+                            way_nodes_id.append(node.id)
+                        else:
+                            # add a new node
+                            self.nodes.append(
+                                Node(self.node_id, point.x, point.y))
+                            way_nodes_id.append(self.node_id)
+                            self.node_id = self.node_id + 1
+
+                # set the width of ways
+                if len(way_nodes_id) > 0:
+                    width = road.get_left_width() + road.get_right_width()
+                    offset = width/2 - road.get_right_width()
+                    self.ways[road_id] = Way(
+                        road_id, way_nodes_id, width, offset, road.is_connection, road.style)
+                pbar.update(1)
 
         # 2. handle the junctions: merge nodes & switch the end points of roads
         for junction in self.opendrive.junctions.values():
             if len(junction.lane_link) >= 2:
-
                 is_Tshape_junction = False
                 is_Xshape_junction = False
 
                 if len(junction.lane_link) == 3:
-                    
                     is_Tshape_junction = self.handle_Tshape(junction)
 
                 if len(junction.lane_link) == 4:
-
                     is_Xshape_junction = True
                     self.handle_Xshape(junction)
-
-                    
 
                 if not is_Tshape_junction and not is_Xshape_junction:
                     self.handle_Nshape(junction)
@@ -152,9 +152,9 @@ class Converter(object):
                 way_end = self.way_end_to_point(contact_node_id, incoming_road)
 
                 line1_nodes.append(
-                        self.nodes[self.ways[incoming_road].nodes_id[way_end]])
+                    self.nodes[self.ways[incoming_road].nodes_id[way_end]])
                 self.ways[incoming_road].nodes_id[way_end] = self.node_id
-                
+
                 # search and delete the incoming road in lane_link we just used
                 for i in range(len(lane_link)):
                     if lane_link[i][0] == incoming_road:
@@ -171,19 +171,20 @@ class Converter(object):
                 way_end = self.way_end_to_point(contact_node_id, incoming_road)
 
                 line2_nodes.append(
-                        self.nodes[self.ways[incoming_road].nodes_id[way_end]])
+                    self.nodes[self.ways[incoming_road].nodes_id[way_end]])
                 self.ways[incoming_road].nodes_id[way_end] = self.node_id
                 line2_nodes.append(
                     self.nodes[self.ways[incoming_road].nodes_id[(way_end + 1 if way_end == 0 else way_end - 1)]])
 
             # calculate the cross point of line(1,2) and line(3,4)
             cross_point = line_cross(line1_nodes, line2_nodes)
-            
+
             line1_nodes.extend(line2_nodes)
-            min_distance_to_center = min(point_distance(cross_point, p) for p in line1_nodes)
+            min_distance_to_center = min(point_distance(
+                cross_point, p) for p in line1_nodes)
 
             self.nodes.append(
-                Node(self.node_id, cross_point.x, cross_point.y, min([junction.max_arcrad,min_distance_to_center])))
+                Node(self.node_id, cross_point.x, cross_point.y, min([junction.max_arcrad, min_distance_to_center])))
             self.node_id = self.node_id + 1
 
         return is_Tshape_junction
@@ -192,23 +193,23 @@ class Converter(object):
 
         line_nodes = list()
         for incoming_road, connecting_road, contact_point in junction.lane_link:
-            contact_node_id = self.ways[connecting_road].nodes_id[ 0 if contact_point == 'start' else -1]
+            contact_node_id = self.ways[connecting_road].nodes_id[0 if contact_point == 'start' else -1]
             way_end = self.way_end_to_point(contact_node_id, incoming_road)
             line_nodes.append(
-                    self.nodes[self.ways[incoming_road].nodes_id[way_end]])
+                self.nodes[self.ways[incoming_road].nodes_id[way_end]])
             self.ways[incoming_road].nodes_id[way_end] = self.node_id
 
         diag_node_index = find_diagonal(line_nodes)
-        if diag_node_index != 1: # we fix 0,1 as diagonal pair
+        if diag_node_index != 1:  # we fix 0,1 as diagonal pair
             line_nodes[1], line_nodes[diag_node_index] = line_nodes[diag_node_index], line_nodes[1]
 
         cross_point = line_cross(line_nodes[:2], line_nodes[2:])
-        min_distance_to_center = min(point_distance(cross_point, p) for p in line_nodes)
+        min_distance_to_center = min(point_distance(
+            cross_point, p) for p in line_nodes)
 
         self.nodes.append(
-            Node(self.node_id, cross_point.x, cross_point.y,  min([junction.max_arcrad,min_distance_to_center])))
+            Node(self.node_id, cross_point.x, cross_point.y,  min([junction.max_arcrad, min_distance_to_center])))
         self.node_id = self.node_id + 1
-
 
     def handle_Nshape(self, junction):
         sum_x = 0
@@ -217,7 +218,7 @@ class Converter(object):
         min_distance_to_center = MAX_ARC_RADIUS
         for incoming_road, connecting_road, contact_point in junction.lane_link:
 
-            contact_node_id = self.ways[connecting_road].nodes_id[ 0 if contact_point == 'start' else -1]
+            contact_node_id = self.ways[connecting_road].nodes_id[0 if contact_point == 'start' else -1]
 
             way_end = self.way_end_to_point(contact_node_id, incoming_road)
 
@@ -229,7 +230,7 @@ class Converter(object):
             sum_y += sub_node.y
 
         self.nodes.append(Node(self.node_id, sum_x / len(junction.lane_link),
-                            sum_y / len(junction.lane_link),  min([junction.max_arcrad,min_distance_to_center])))
+                               sum_y / len(junction.lane_link),  min([junction.max_arcrad, min_distance_to_center])))
         self.node_id = self.node_id + 1
 
     def generate_osm(self, filename):
@@ -252,7 +253,7 @@ class Converter(object):
                           'k': "minArcRadius", 'v': str(node.max_arcrad)})
 
         for way_key, way_value in self.ways.items():
-            if way_value.is_connecting: # ignore all connecting roads
+            if way_value.is_connecting:  # ignore all connecting roads
                 continue
 
             way_attrib = {'id': str(way_key), 'version': '1', 'changeset': '1',

@@ -7,6 +7,7 @@ A simple python script to convert OpenDrive file into OpenStreetMap file.
 ```
 cd geompreds-1.0.2
 python setup.py install
+pip install pyqtree
 
 python Converter.py
 ```
