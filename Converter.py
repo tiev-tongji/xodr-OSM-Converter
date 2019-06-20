@@ -7,6 +7,7 @@ from datetime import datetime
 from opendrivepy.opendrive import OpenDrive
 from opendrivepy.point import Point
 from tqdm import tqdm
+from pyqtree import Index
 
 from osmtype import *
 from Util import *
@@ -25,13 +26,15 @@ class Converter(object):
 
         print("Reading OpenDrive...")
         self.opendrive = OpenDrive(filename)
-        self.scale = self.set_scale(scene_scale)
+        self.scale, minx, miny, maxx, maxy = self.set_scale(scene_scale)
         # print(self.scale)
 
         print("Converting...")
         self.node_id = 0
         self.ways = dict()
         self.nodes = list()
+
+        self.spindex = Index(bbox=(minx, miny, maxx, maxy))
         self.convert()
         print("done")
 
@@ -48,15 +51,21 @@ class Converter(object):
                 y.append(geometry.y)
                 length.append(geometry.length)
 
-        scale = max([(max(x) - min(x)), (max(y) - min(y))]) / tar_scale
+        maxx = max(x)
+        maxy = max(y)
+        minx = min(x)
+        miny = min(y)
+        scale = max([(maxx - minx), (maxy - miny)]) / tar_scale
 
         if scale == 0:
             scale = max(length) / tar_scale
 
-        return scale
+        return scale, minx, miny, maxx, maxy
 
     def convert(self):
         # 1. convert all roads into nodes+ways
+        
+
         with tqdm(total=len(self.opendrive.roads), ascii=True) as pbar:
             for road_id, road in self.opendrive.roads.items():
                 pbar.set_description("Processing road_id=%s" % road_id)
@@ -69,20 +78,18 @@ class Converter(object):
                     for point in record.points:
                         found = False  # to avoid duplicate
 
-                        # search for dup
-                        for node in self.nodes:
-                            if point_distance(node, point) < min_distance:
-                                found = True
-                                break
+                        # search for dup                       
+                        near_node_ids =  self.spindex.intersect((point.x, point.y,point.x, point.y))
 
-                        if found:
-                            # if the node is quite close to an existing node, merge them
-                            way_nodes_id.append(node.id)
+                        if len(near_node_ids) > 0:
+                            # if the new node A is quite close to an existing node B, use B
+                            way_nodes_id.append(near_node_ids[0])
                         else:
                             # add a new node
                             self.nodes.append(
                                 Node(self.node_id, point.x, point.y))
                             way_nodes_id.append(self.node_id)
+                            self.spindex.insert(self.node_id, (point.x-min_distance, point.y-min_distance,point.x+min_distance, point.y+min_distance))
                             self.node_id = self.node_id + 1
 
                 # set the width of ways
