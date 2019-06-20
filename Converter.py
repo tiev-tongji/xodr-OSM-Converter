@@ -109,21 +109,35 @@ class Converter(object):
                 for point in record.points:
                     #print('\n')
                     #print("node_id = " + str(node_id))
-                    if last_point is not None:
-                        if point_distance(last_point, point) > min_distance:
-                            # print(point_distance(last_point, point))
-                            nodes.append(Node(node_id, point.x, point.y))
-                            way_nodes_id.append(node_id)
-                            node_id = node_id + 1
-                            last_point = point
-                        #else:
-                        #    print("discarded")
+                    found = False
+                    for node in nodes:
+                        if point_distance(node, point) < min_distance:
+                            found = True
+                            break
+
+                    if found:
+                        way_nodes_id.append(node.id)
                     else:
-                        #print("first point")
                         nodes.append(Node(node_id, point.x, point.y))
                         way_nodes_id.append(node_id)
                         node_id = node_id + 1
-                        last_point = point
+                    #     last_point = point
+
+                    # if last_point is not None:
+                    #     if point_distance(last_point, point) > min_distance:
+                    #         # print(point_distance(last_point, point))
+                    #         nodes.append(Node(node_id, point.x, point.y))
+                    #         way_nodes_id.append(node_id)
+                    #         node_id = node_id + 1
+                    #         last_point = point
+                    #     #else:
+                    #     #    print("discarded")
+                    # else:
+                    #     #print("first point")
+                    #     nodes.append(Node(node_id, point.x, point.y))
+                    #     way_nodes_id.append(node_id)
+                    #     node_id = node_id + 1
+                    #     last_point = point
 
             if len(way_nodes_id) > 0:
                 width = road.get_left_width() + road.get_right_width()
