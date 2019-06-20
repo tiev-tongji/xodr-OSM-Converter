@@ -15,9 +15,18 @@ class OpenDrive(object):
         self.controllers = list()
         self.junctions = parser.parse_junctions()
 
-        for junction in self.junctions.values():
+        for junc_id, junction in self.junctions.items():
+            max_arcrad = 0
             for connection in junction.connections:
                 self.roads[connection.connecting_road].is_connection = True
+
+                road = self.roads[connection.connecting_road]
+                if road.arcrad > max_arcrad:
+                    max_arcrad = road.arcrad
+            # print(max_arcrad)
+            self.junctions[junc_id].max_arcrad = max_arcrad
+        # self.max_arcrad = max_arcrad
+                
         self.junction_groups = list()
         self.stations = list()
         self.roadmap = RoadMap(self.roads)

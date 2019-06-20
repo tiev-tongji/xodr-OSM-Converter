@@ -11,6 +11,7 @@ class Junction(object):
         
         self.lane_link = list()
         self.added_link = list() # to avoid duplicate
+        self.max_arcrad = 0
 
     def add_connection(self, new_connection):
         self.connections.append(new_connection)

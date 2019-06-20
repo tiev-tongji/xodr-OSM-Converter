@@ -20,6 +20,13 @@ class Road(object):
             if view.style != self.style and view.length > 1e-2:
                 self.style = 'mix'
                 break
+
+        self.arcrad = 0
+        for view in plan_view:
+            if view.style == 'arc' and view.length > 1e-2 and view.radius > self.arcrad and view.radius < 100:
+                self.arcrad = view.radius
+        # print(self.arcrad)
+
         self.elevation_profile = None
         self.lateral_profile = None
         self.lanes = lanes

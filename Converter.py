@@ -145,6 +145,7 @@ class Converter(object):
                 ways[road_id] = Way(road_id,way_nodes_id,width, offset, road.is_connection, road.style)
         
         for junction in self.opendrive.junctions.values():
+            # print(junction.max_arcrad)
             if len(junction.lane_link) >= 2:
                 # print(len(junction.lane_link))
 
@@ -210,7 +211,7 @@ class Converter(object):
                         # print(line2_nodes[1].id)
                         # print('=' + str(node_id))
                         cross_point = line_cross(line1_nodes, line2_nodes)
-                        nodes.append(Node(node_id, cross_point[0], cross_point[1], 10))
+                        nodes.append(Node(node_id, cross_point[0], cross_point[1], junction.max_arcrad))
                         node_id = node_id + 1
 
 
@@ -236,7 +237,7 @@ class Converter(object):
                     if diag_nodes != 1:
                         line_nodes[1], line_nodes[diag_nodes] = line_nodes[diag_nodes], line_nodes[1]
                     cross_point = line_cross(line_nodes[:2], line_nodes[2:])
-                    nodes.append(Node(node_id, cross_point[0], cross_point[1], 10))
+                    nodes.append(Node(node_id, cross_point[0], cross_point[1],  junction.max_arcrad))
                     node_id = node_id + 1
 
                 if not is_Tshape_junction and not is_Xshape_junction:
@@ -268,7 +269,7 @@ class Converter(object):
                             sum_y += sub_node.y
                         
                     # print('=' + str(min_distance_to_center))
-                    nodes.append(Node(node_id,sum_x / len(junction.lane_link), sum_y / len(junction.lane_link), min_distance_to_center))
+                    nodes.append(Node(node_id,sum_x / len(junction.lane_link), sum_y / len(junction.lane_link),  junction.max_arcrad))
                     # print("=" + str(node_id))
                     node_id = node_id + 1
             
@@ -291,7 +292,7 @@ class Converter(object):
             node_root = ET.SubElement(osm_root, 'node', node_attrib)
             ET.SubElement(node_root, 'tag', {'k': "type", 'v':'Crossing'})
             # if node.min_arc_radius != 0 :
-            ET.SubElement(node_root, 'tag', {'k': "minArcRadius", 'v': str(0)})
+            ET.SubElement(node_root, 'tag', {'k': "minArcRadius", 'v': str(node.max_arcrad)})
 
         for way_key, way_value in self.ways.items():
             if way_value.is_connecting:
@@ -310,4 +311,4 @@ class Converter(object):
         tree = ET.ElementTree(osm_root)
         tree.write(filename)
 
-Converter('./xodr/Town02.xodr', 0.01).generate_osm('./osm/Town02.osm')
+Converter('./xodr/Town05.xodr', 0.01).generate_osm('./osm/Town05.osm')

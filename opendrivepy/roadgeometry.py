@@ -45,11 +45,12 @@ class RoadArc(RoadGeometry):
     def __init__(self, s, x, y, hdg, length, curvature):
         super(RoadArc, self).__init__(s, x, y, hdg, length, 'arc')
         self.curvature = curvature
+        self.radius = fabs(1/self.curvature)
         self.generate_coords(int(ceil(self.length) + 1))
         self.generate_segments()
 
     def base_arc(self, n):
-        radius = fabs(1/self.curvature)
+        radius = self.radius
         circumference = radius * pi * 2
         angle = (self.length/circumference) * 2 * pi
         # If curvature < 0, then the arc rotates clockwise
