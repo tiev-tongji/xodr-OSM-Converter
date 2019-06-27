@@ -55,12 +55,13 @@ class Converter(object):
         maxy = max(y)
         minx = min(x)
         miny = min(y)
-        scale = max([(maxx - minx), (maxy - miny)]) / tar_scale
+        # scale = max([(maxx - minx), (maxy - miny)]) / tar_scale
+        # print(scale)
 
-        if scale == 0:
-            scale = max(length) / tar_scale
+        # if scale == 0:
+        #     scale = max(length) / tar_scale
 
-        return scale, minx, miny, maxx, maxy
+        return scene_scale, minx, miny, maxx, maxy
 
     def convert(self):
         # 1. convert all roads into nodes+ways
@@ -217,6 +218,7 @@ class Converter(object):
         cross_point = line_cross(line_nodes[:2], line_nodes[2:])
         min_distance_to_center = min(point_distance(
             cross_point, p) for p in line_nodes)
+        print(min_distance_to_center, junction.max_arcrad)
 
         self.nodes.append(
             Node(self.node_id, cross_point.x, cross_point.y,  min([junction.max_arcrad, min_distance_to_center])))
@@ -299,4 +301,4 @@ class Converter(object):
         tree.write(filename)
 
 
-Converter('./xodr/Town02.xodr', 0.002).generate_osm('./osm/Town02.osm')
+Converter('./xodr/Town05.xodr', 100000).generate_osm('./osm/Town05.osm')

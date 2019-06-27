@@ -13,6 +13,7 @@ class RoadGeometry(object):
         self.s = s
         self.x = x
         self.y = y
+        self.z = z
         self.hdg = hdg
         self.length = length
 
