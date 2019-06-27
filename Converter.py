@@ -24,7 +24,7 @@ class Converter(object):
     def __init__(self, filename, scene_scale):
         super(Converter, self).__init__()
 
-        print("Reading OpenDrive...")
+        print("Reading OpenDrive file: " + filename)
         self.opendrive = OpenDrive(filename)
         self.scale, minx, miny, maxx, maxy = self.set_scale(scene_scale)
         # print(self.scale)
@@ -218,7 +218,7 @@ class Converter(object):
         cross_point = line_cross(line_nodes[:2], line_nodes[2:])
         min_distance_to_center = min(point_distance(
             cross_point, p) for p in line_nodes)
-        print(min_distance_to_center, junction.max_arcrad)
+        # print(min_distance_to_center, junction.max_arcrad)
 
         self.nodes.append(
             Node(self.node_id, cross_point.x, cross_point.y,  min([junction.max_arcrad, min_distance_to_center])))
@@ -258,10 +258,11 @@ class Converter(object):
         # add all nodes into osm
         for node in self.nodes:
             node_attrib = {'id': str(node.id), 'visible': 'true', 'version': '1', 'changeset': '1', 'timestamp': datetime.utcnow().strftime(
-                '%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1', 'lat': str(node.x / self.scale), 'lon': str(node.y / self.scale)}
+                '%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1', 'lat': str(node.x / self.scale), 'lon': str(node.y / self.scale), 'ele':'2'}
             node_root = ET.SubElement(osm_root, 'node', node_attrib)
 
             ET.SubElement(node_root, 'tag', {'k': "type", 'v': 'Crossing'})
+            # ET.SubElement(node_root, 'tag', {'k': "y", 'v': '2'})
             ET.SubElement(node_root, 'tag', {
                           'k': "minArcRadius", 'v': str(node.max_arcrad)})
 
@@ -301,4 +302,4 @@ class Converter(object):
         tree.write(filename)
 
 
-Converter('./xodr/Town05.xodr', 100000).generate_osm('./osm/Town05.osm')
+Converter('./xodr/Town01.xodr', 100000).generate_osm('./osm/Town01.osm')
