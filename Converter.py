@@ -225,26 +225,78 @@ class Converter(object):
         self.node_id = self.node_id + 1
 
     def handle_Nshape(self, junction):
-        sum_x = 0
-        sum_y = 0
+        
+        line1_nodes = list()
+        line2_nodes = list()
+        last_cross_point = None
 
-        min_distance_to_center = MAX_ARC_RADIUS
-        for incoming_road, connecting_road, contact_point in junction.lane_link:
+        # add the contact point of an incoming road as line1
+        incoming_road, connecting_road, contact_point = junction.lane_link[0]
+        contact_node_id = self.ways[connecting_road].nodes_id[0 if contact_point == 'start' else -1]
+        way_end = self.way_end_to_point(contact_node_id, incoming_road)
 
+        line1_nodes.append(
+            self.nodes[self.ways[incoming_road].nodes_id[way_end]])
+        self.ways[incoming_road].nodes_id[way_end] = self.node_id
+        line1_nodes.append(
+            self.nodes[self.ways[incoming_road].nodes_id[(way_end + 1 if way_end == 0 else way_end - 1)]])
+
+        # add the contact point of an incoming road as line2
+        for incoming_road, connecting_road, contact_point in junction.lane_link[1:]:
             contact_node_id = self.ways[connecting_road].nodes_id[0 if contact_point == 'start' else -1]
-
             way_end = self.way_end_to_point(contact_node_id, incoming_road)
 
-            sub_node = self.nodes[self.ways[incoming_road].nodes_id[way_end]]
+            line2_nodes.append(
+                self.nodes[self.ways[incoming_road].nodes_id[way_end]])
             self.ways[incoming_road].nodes_id[way_end] = self.node_id
+            line2_nodes.append(
+                self.nodes[self.ways[incoming_road].nodes_id[(way_end + 1 if way_end == 0 else way_end - 1)]])
 
-            # to calculate the center point of junctions
-            sum_x += sub_node.x
-            sum_y += sub_node.y
+            # calculate the cross point of line1 and line2
+            cross_point = line_cross(line1_nodes, line2_nodes)
+            line1_nodes = line2_nodes
 
-        self.nodes.append(Node(self.node_id, sum_x / len(junction.lane_link),
-                               sum_y / len(junction.lane_link),  min([junction.max_arcrad, min_distance_to_center])))
+            if last_cross_point is not None:
+                if point_distance(last_cross_point, cross_point) > min_distance:
+                    self.nodes.append(
+                        Node(self.node_id, last_cross_point.x, last_cross_point.y,  5))
+                    self.node_id = self.node_id + 1
+                    last_cross_point = cross_point
+            else:        
+                last_cross_point = cross_point
+
+        self.nodes.append(
+            Node(self.node_id, cross_point.x, cross_point.y,  5))
         self.node_id = self.node_id + 1
+
+
+            # min_distance_to_center = min(point_distance(
+            #     cross_point, p) for p in line1_nodes)
+
+            # self.nodes.append(
+            #     Node(self.node_id, cross_point.x, cross_point.y, min([junction.max_arcrad, min_distance_to_center])))
+            # self.node_id = self.node_id + 1
+
+        # sum_x = 0
+        # sum_y = 0
+
+        # min_distance_to_center = MAX_ARC_RADIUS
+        # for incoming_road, connecting_road, contact_point in junction.lane_link:
+
+        #     contact_node_id = self.ways[connecting_road].nodes_id[0 if contact_point == 'start' else -1]
+
+        #     way_end = self.way_end_to_point(contact_node_id, incoming_road)
+
+        #     sub_node = self.nodes[self.ways[incoming_road].nodes_id[way_end]]
+        #     self.ways[incoming_road].nodes_id[way_end] = self.node_id
+
+        #     # to calculate the center point of junctions
+        #     sum_x += sub_node.x
+        #     sum_y += sub_node.y
+
+        # self.nodes.append(Node(self.node_id, sum_x / len(junction.lane_link),
+        #                        sum_y / len(junction.lane_link),  min([junction.max_arcrad, min_distance_to_center])))
+        # self.node_id = self.node_id + 1
 
     def generate_osm(self, filename):
         osm_attrib = {'version': "0.6", 'generator': "xodr_OSM_converter", 'copyright': "Simon",
@@ -302,4 +354,4 @@ class Converter(object):
         tree.write(filename)
 
 
-Converter('./xodr/Town01.xodr', 100000).generate_osm('./osm/Town01.osm')
+Converter('./xodr/Town04.xodr', 100000).generate_osm('./osm/Town04.osm')
