@@ -64,7 +64,6 @@ class Converter(object):
 
     def convert(self):
         # 1. convert all roads into nodes+ways
-        
 
         with tqdm(total=len(self.opendrive.roads), ascii=True) as pbar:
             for road_id, road in self.opendrive.roads.items():
@@ -78,8 +77,9 @@ class Converter(object):
                     for point in record.points:
                         found = False  # to avoid duplicate
 
-                        # search for dup                       
-                        near_node_ids =  self.spindex.intersect((point.x, point.y,point.x, point.y))
+                        # search for dup
+                        near_node_ids = self.spindex.intersect(
+                            (point.x, point.y, point.x, point.y))
 
                         if len(near_node_ids) > 0:
                             # if the new node A is quite close to an existing node B, use B
@@ -89,15 +89,19 @@ class Converter(object):
                             self.nodes.append(
                                 Node(self.node_id, point.x, point.y))
                             way_nodes_id.append(self.node_id)
-                            self.spindex.insert(self.node_id, (point.x-min_distance, point.y-min_distance,point.x+min_distance, point.y+min_distance))
+                            self.spindex.insert(
+                                self.node_id, (point.x-min_distance, point.y-min_distance, point.x+min_distance, point.y+min_distance))
                             self.node_id = self.node_id + 1
 
                 # set the width of ways
                 if len(way_nodes_id) > 0:
-                    width = road.get_left_width() + road.get_right_width()
-                    offset = width/2 - road.get_right_width()
+                    ws_left, wd_left, n_left = road.get_left_width()
+                    ws_right, wd_right, n_right = road.get_right_width()
+                    width = wd_left + wd_right
+
+                    offset = width/2 - wd_right
                     self.ways[road_id] = Way(
-                        road_id, way_nodes_id, width, offset, road.is_connection, road.style)
+                        road_id, way_nodes_id, width, offset, road.is_connection, road.style, n_left, n_right, ws_left, ws_right)
                 pbar.update(1)
 
         # 2. handle the junctions: merge nodes & switch the end points of roads
@@ -279,12 +283,20 @@ class Converter(object):
             ET.SubElement(way_root, 'tag', {
                           'k': "streetOffset", 'v': str(way_value.offset)})
             ET.SubElement(way_root, 'tag', {
-                          'k': "sidewalkWidthLeft", 'v': str(0)})
+                          'k': "sidewalkWidthLeft", 'v': str(way_value.widthleftwalk)})
             ET.SubElement(way_root, 'tag', {
-                          'k': "sidewalkWidthRight", 'v': str(0)})
+                          'k': "sidewalkWidthRight", 'v': str(way_value.widthrightwalk)})
+            ET.SubElement(way_root, 'tag', {
+                          'k': "NbrOfRightLanes", 'v': str(way_value.nrightlanes)})
+
+            ET.SubElement(way_root, 'tag', {
+                          'k': "nLanesTotal", 'v': str(way_value.nrightlanes + way_value.nleftlanes)})
+            if way_value.nrightlanes == 0 or way_value.nleftlanes == 0:
+                ET.SubElement(way_root, 'tag', {
+                    'k': "Centerline", 'v': "none"})
 
         tree = ET.ElementTree(osm_root)
         tree.write(filename)
 
 
-Converter('./xodr/Town05.xodr', 0.01).generate_osm('./osm/Town05.osm')
+Converter('./xodr/Town02.xodr', 0.002).generate_osm('./osm/Town02.osm')
