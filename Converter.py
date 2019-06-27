@@ -14,7 +14,7 @@ from Utils import *
 
 # To avoid the conflict between nodes
 # Any points that is too close with peer ( < min distance ) are discarded
-min_distance = 0.01
+min_distance = 1
 MAX_ARC_RADIUS = 50
 
 
