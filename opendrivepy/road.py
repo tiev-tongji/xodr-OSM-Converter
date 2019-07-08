@@ -4,7 +4,7 @@ from opendrivepy.point import EndPoint
 
 
 class Road(object):
-    def __init__(self, name, length, id, junction, predecessor, successor, plan_view, lanes):
+    def __init__(self, name, length, id, junction, predecessor, successor, plan_view, elevations, lanes):
         self.name = name
         self.length = length
         self.id = id
@@ -21,13 +21,21 @@ class Road(object):
                 self.style = 'mix'
                 break
 
+        self.points = list()
         self.arcrad = 0
+        # a road is composed by serval plan views
         for view in plan_view:
             if view.style == 'arc' and view.length > 1e-2 and view.radius > self.arcrad and view.radius < 100:
                 self.arcrad = view.radius
+            for point in view.points:
+                self.points.append(point)
         # print(self.arcrad)
 
-        self.elevation_profile = None
+        self.elevation_profile = elevations
+        for ele in elevations:
+            if ele.a != 0:
+                pass
+
         self.lateral_profile = None
         self.lanes = lanes
 

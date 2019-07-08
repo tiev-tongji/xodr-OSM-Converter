@@ -27,6 +27,13 @@ class RoadGeometry(object):
         for i in range(len(self.points)-1):
             self.segments.append(RoadSegment(self.points[i], self.points[i+1]))
 
+class RoadElevation(object):
+    def __init__(self, s, a, b, c, d):
+        self.s = s
+        self.a = a
+        self.b = b
+        self.c = c
+        self.d = d
 
 class RoadLine(RoadGeometry):
     def __init__(self, s, x, y, hdg, length):

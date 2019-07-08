@@ -71,28 +71,24 @@ class Converter(object):
                 pbar.set_description("Processing road_id=%s" % road_id)
                 way_nodes_id = list()
 
-                # a road is composed by serval plan views
-                for record in road.plan_view:
+                # all points in a road
+                for point in road.points:
+                    # search for dup
+                    near_node_ids = self.spindex.intersect(
+                        (point.x, point.y, point.x, point.y))
 
-                    # add all points of a road into nodes list
-                    for point in record.points:
-                        found = False  # to avoid duplicate
-
-                        # search for dup
-                        near_node_ids = self.spindex.intersect(
-                            (point.x, point.y, point.x, point.y))
-
-                        if len(near_node_ids) > 0:
+                    if len(near_node_ids) > 0: # dup exists
+                        if not (near_node_ids[0] in way_nodes_id): # not exists in current way_nodes_id
                             # if the new node A is quite close to an existing node B, use B
                             way_nodes_id.append(near_node_ids[0])
-                        else:
-                            # add a new node
-                            self.nodes.append(
-                                Node(self.node_id, point.x, point.y))
-                            way_nodes_id.append(self.node_id)
-                            self.spindex.insert(
-                                self.node_id, (point.x-min_distance, point.y-min_distance, point.x+min_distance, point.y+min_distance))
-                            self.node_id = self.node_id + 1
+                    else:
+                        # add a new node
+                        self.nodes.append(
+                            Node(self.node_id, point.x, point.y, 0))
+                        way_nodes_id.append(self.node_id)
+                        self.spindex.insert(
+                            self.node_id, (point.x-min_distance, point.y-min_distance, point.x+min_distance, point.y+min_distance))
+                        self.node_id = self.node_id + 1
 
                 # set the width of ways
                 if len(way_nodes_id) > 0:
@@ -196,7 +192,7 @@ class Converter(object):
                 cross_point, p) for p in line1_nodes)
 
             self.nodes.append(
-                Node(self.node_id, cross_point.x, cross_point.y, min([junction.max_arcrad, min_distance_to_center])))
+                Node(self.node_id, cross_point.x, cross_point.y, 0, min([junction.max_arcrad, min_distance_to_center])))
             self.node_id = self.node_id + 1
 
         return is_Tshape_junction
@@ -221,7 +217,7 @@ class Converter(object):
         # print(min_distance_to_center, junction.max_arcrad)
 
         self.nodes.append(
-            Node(self.node_id, cross_point.x, cross_point.y,  min([junction.max_arcrad, min_distance_to_center])))
+            Node(self.node_id, cross_point.x, cross_point.y, 0, min([junction.max_arcrad, min_distance_to_center])))
         self.node_id = self.node_id + 1
 
     def handle_Nshape(self, junction):
@@ -259,14 +255,14 @@ class Converter(object):
             if last_cross_point is not None:
                 if point_distance(last_cross_point, cross_point) > min_distance:
                     self.nodes.append(
-                        Node(self.node_id, last_cross_point.x, last_cross_point.y,  5))
+                        Node(self.node_id, last_cross_point.x, last_cross_point.y, 0, 5))
                     self.node_id = self.node_id + 1
                     last_cross_point = cross_point
             else:        
                 last_cross_point = cross_point
 
         self.nodes.append(
-            Node(self.node_id, cross_point.x, cross_point.y,  5))
+            Node(self.node_id, cross_point.x, cross_point.y, 0,  5))
         self.node_id = self.node_id + 1
 
 
@@ -298,7 +294,12 @@ class Converter(object):
         #                        sum_y / len(junction.lane_link),  min([junction.max_arcrad, min_distance_to_center])))
         # self.node_id = self.node_id + 1
 
-    def generate_osm(self, filename):
+    def generate_osm(self, filename, debug = False):
+        if debug:
+            for node in self.nodes:
+                plt.plot(node.x, node.y, node.color)
+            plt.show()
+
         osm_attrib = {'version': "0.6", 'generator': "xodr_OSM_converter", 'copyright': "Simon",
                       'attribution': "Simon", 'license': "GNU or whatever"}
         osm_root = ET.Element('osm', osm_attrib)
@@ -354,4 +355,4 @@ class Converter(object):
         tree.write(filename)
 
 
-Converter('./xodr/Town04.xodr', 100000).generate_osm('./osm/Town04.osm')
+Converter('./xodr/Town05.xodr', 100000).generate_osm('./osm/Town05.osm', False)

@@ -1,12 +1,14 @@
 class Node(object):
     """docstring for Node"""
 
-    def __init__(self, node_id, x, y, max_arcrad=0):
+    def __init__(self, node_id, x, y, z, max_arcrad=0, color = 'y.'):
         super(Node, self).__init__()
         self.id = node_id
         self.x = x
         self.y = y
+        self.z = z
         self.max_arcrad = max_arcrad
+        self.color = color
 
 
 class Way(object):
