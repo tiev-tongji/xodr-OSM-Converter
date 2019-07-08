@@ -84,7 +84,7 @@ class Converter(object):
                     else:
                         # add a new node
                         self.nodes.append(
-                            Node(self.node_id, point.x, point.y, 0))
+                            Node(self.node_id, point.x, point.y, point.z))
                         way_nodes_id.append(self.node_id)
                         self.spindex.insert(
                             self.node_id, (point.x-min_distance, point.y-min_distance, point.x+min_distance, point.y+min_distance))
@@ -315,7 +315,7 @@ class Converter(object):
             node_root = ET.SubElement(osm_root, 'node', node_attrib)
 
             ET.SubElement(node_root, 'tag', {'k': "type", 'v': 'Crossing'})
-            # ET.SubElement(node_root, 'tag', {'k': "y", 'v': '2'})
+            ET.SubElement(node_root, 'tag', {'k': "height", 'v': str(node.z)})
             ET.SubElement(node_root, 'tag', {
                           'k': "minArcRadius", 'v': str(node.max_arcrad)})
 
@@ -355,4 +355,4 @@ class Converter(object):
         tree.write(filename)
 
 
-Converter('./xodr/Town05.xodr', 100000).generate_osm('./osm/Town05.osm', False)
+Converter('./xodr/Town04.xodr', 100000).generate_osm('./osm/Town04.osm', False)

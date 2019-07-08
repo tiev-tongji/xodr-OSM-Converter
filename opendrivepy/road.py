@@ -24,7 +24,7 @@ class Road(object):
         self.points = list()
         self.arcrad = 0
         # a road is composed by serval plan views
-        for view in plan_view:
+        for view in self.plan_view:
             if view.style == 'arc' and view.length > 1e-2 and view.radius > self.arcrad and view.radius < 100:
                 self.arcrad = view.radius
             for point in view.points:
@@ -32,9 +32,19 @@ class Road(object):
         # print(self.arcrad)
 
         self.elevation_profile = elevations
-        for ele in elevations:
-            if ele.a != 0:
-                pass
+
+        points_id = 0
+        for i in range(len(elevations)-1):
+            elevation = elevations[i]
+            if elevation.a != 0 or elevation.b != 0 or elevation.c != 0 or elevation.d != 0: # has banking
+                while points_id < len(self.points):
+                    if self.points[points_id].s >= elevations[i+1].s:
+                        break
+                    
+                    ds = self.points[points_id].s - elevation.s
+                    self.points[points_id].z = elevation.a + elevation.b * ds + elevation.c * (ds**2) + elevation.d * (ds**3)
+                    points_id += 1
+
 
         self.lateral_profile = None
         self.lanes = lanes
@@ -43,8 +53,6 @@ class Road(object):
         # Endpoints between records are duplicated atm
         self.points = list()
         self.generate_points()
-        self.segments = list()
-        self.generate_segments()
 
         self.start_point = EndPoint
         self.end_point = EndPoint
@@ -53,10 +61,6 @@ class Road(object):
     def generate_points(self):
         for record in self.plan_view:
             self.points.extend(record.points)
-
-    def generate_segments(self):
-        for record in self.plan_view:
-            self.segments.extend(record.segments)
 
     def draw_road(self):
         for record in self.plan_view:
