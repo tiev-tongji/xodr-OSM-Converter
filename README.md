@@ -1,6 +1,6 @@
 # xodr-OSM-Converter
 
-A simple python script to convert OpenDrive file into OpenStreetMap file.
+A simple python script to convert OpenDrive file to OpenStreetMap file.
 
 
 ## usage:
