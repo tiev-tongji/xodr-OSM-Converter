@@ -14,19 +14,19 @@ from Utils import *
 
 # To avoid the conflict between nodes
 # Any points that is too close with peer ( < min distance ) are discarded
-min_distance = 1
 MAX_ARC_RADIUS = 50
 
 
 class Converter(object):
     """docstring for Converter"""
 
-    def __init__(self, filename, scene_scale):
+    def __init__(self, filename, scene_scale, min_distance):
         super(Converter, self).__init__()
 
         print("Reading OpenDrive file: " + filename)
         self.opendrive = OpenDrive(filename)
         self.scale, minx, miny, maxx, maxy = self.set_scale(scene_scale)
+        self.min_distance = min_distance
         # print(self.scale)
 
         print("Converting...")
@@ -87,7 +87,7 @@ class Converter(object):
                             Node(self.node_id, point.x, point.y, point.z))
                         way_nodes_id.append(self.node_id)
                         self.spindex.insert(
-                            self.node_id, (point.x-min_distance, point.y-min_distance, point.x+min_distance, point.y+min_distance))
+                            self.node_id, (point.x-self.min_distance, point.y-self.min_distance, point.x+self.min_distance, point.y+self.min_distance))
                         self.node_id = self.node_id + 1
 
                 # set the width of ways
@@ -189,11 +189,11 @@ class Converter(object):
             cross_point.z = (line1_nodes[0].z + line1_nodes[1].z + line2_nodes[0].z + line2_nodes[1].z) /4
 
             line1_nodes.extend(line2_nodes)
-            min_distance_to_center = min(point_distance(
+            self.min_distance_to_center = min(point_distance(
                 cross_point, p) for p in line1_nodes)
 
             self.nodes.append(
-                Node(self.node_id, cross_point.x, cross_point.y, cross_point.z, min([junction.max_arcrad, min_distance_to_center])))
+                Node(self.node_id, cross_point.x, cross_point.y, cross_point.z, min([junction.max_arcrad, self.min_distance_to_center])))
             self.node_id = self.node_id + 1
 
         return is_Tshape_junction
@@ -215,12 +215,12 @@ class Converter(object):
         cross_point = line_cross(line_nodes[:2], line_nodes[2:])
         cross_point.z = (line_nodes[0].z + line_nodes[1].z + line_nodes[2].z + line_nodes[3].z) /4
 
-        min_distance_to_center = min(point_distance(
+        self.min_distance_to_center = min(point_distance(
             cross_point, p) for p in line_nodes)
-        # print(min_distance_to_center, junction.max_arcrad)
+        # print(self.min_distance_to_center, junction.max_arcrad)
 
         self.nodes.append(
-            Node(self.node_id, cross_point.x, cross_point.y, cross_point.z, min([junction.max_arcrad, min_distance_to_center])))
+            Node(self.node_id, cross_point.x, cross_point.y, cross_point.z, min([junction.max_arcrad, self.min_distance_to_center])))
         self.node_id = self.node_id + 1
 
     def handle_Nshape(self, junction):
@@ -256,7 +256,7 @@ class Converter(object):
             line1_nodes = line2_nodes
 
             if last_cross_point is not None:
-                if point_distance(last_cross_point, cross_point) > min_distance:
+                if point_distance(last_cross_point, cross_point) > self.min_distance:
                     self.nodes.append(
                         Node(self.node_id, last_cross_point.x, last_cross_point.y, 0, 5))
                     self.node_id = self.node_id + 1
@@ -269,17 +269,17 @@ class Converter(object):
         self.node_id = self.node_id + 1
 
 
-            # min_distance_to_center = min(point_distance(
+            # self.min_distance_to_center = min(point_distance(
             #     cross_point, p) for p in line1_nodes)
 
             # self.nodes.append(
-            #     Node(self.node_id, cross_point.x, cross_point.y, min([junction.max_arcrad, min_distance_to_center])))
+            #     Node(self.node_id, cross_point.x, cross_point.y, min([junction.max_arcrad, self.min_distance_to_center])))
             # self.node_id = self.node_id + 1
 
         # sum_x = 0
         # sum_y = 0
 
-        # min_distance_to_center = MAX_ARC_RADIUS
+        # self.min_distance_to_center = MAX_ARC_RADIUS
         # for incoming_road, connecting_road, contact_point in junction.lane_link:
 
         #     contact_node_id = self.ways[connecting_road].nodes_id[0 if contact_point == 'start' else -1]
@@ -294,7 +294,7 @@ class Converter(object):
         #     sum_y += sub_node.y
 
         # self.nodes.append(Node(self.node_id, sum_x / len(junction.lane_link),
-        #                        sum_y / len(junction.lane_link),  min([junction.max_arcrad, min_distance_to_center])))
+        #                        sum_y / len(junction.lane_link),  min([junction.max_arcrad, self.min_distance_to_center])))
         # self.node_id = self.node_id + 1
 
     def generate_osm(self, filename, debug = False):
@@ -314,7 +314,7 @@ class Converter(object):
         # add all nodes into osm
         for node in self.nodes:
             node_attrib = {'id': str(node.id), 'visible': 'true', 'version': '1', 'changeset': '1', 'timestamp': datetime.utcnow().strftime(
-                '%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1', 'lat': str(node.x / self.scale), 'lon': str(node.y / self.scale), 'ele':'2'}
+                '%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1', 'lon': str(node.x / self.scale), 'lat': str(node.y / self.scale), 'ele':'2'}
             node_root = ET.SubElement(osm_root, 'node', node_attrib)
 
             ET.SubElement(node_root, 'tag', {'k': "type", 'v': 'Smart'})
@@ -358,4 +358,8 @@ class Converter(object):
         tree.write(filename)
 
 
-Converter('./xodr/test.xodr', 100000).generate_osm('./osm/test.osm', False)
+Converter('./xodr/town01.xodr', 100000, 1).generate_osm('./osm/town01.osm', False)
+# Converter('./xodr/town02.xodr', 100000, 1).generate_osm('./osm/town02.osm', False)
+# Converter('./xodr/town03.xodr', 100000, 1).generate_osm('./osm/town03.osm', False)
+# Converter('./xodr/town04.xodr', 100000, 1).generate_osm('./osm/town04.osm', False)
+# Converter('./xodr/town05.xodr', 100000, 1).generate_osm('./osm/town05.osm', False)
