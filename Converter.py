@@ -186,13 +186,14 @@ class Converter(object):
 
             # calculate the cross point of line(1,2) and line(3,4)
             cross_point = line_cross(line1_nodes, line2_nodes)
+            cross_point.z = (line1_nodes[0].z + line1_nodes[1].z + line2_nodes[0].z + line2_nodes[1].z) /4
 
             line1_nodes.extend(line2_nodes)
             min_distance_to_center = min(point_distance(
                 cross_point, p) for p in line1_nodes)
 
             self.nodes.append(
-                Node(self.node_id, cross_point.x, cross_point.y, 0, min([junction.max_arcrad, min_distance_to_center])))
+                Node(self.node_id, cross_point.x, cross_point.y, cross_point.z, min([junction.max_arcrad, min_distance_to_center])))
             self.node_id = self.node_id + 1
 
         return is_Tshape_junction
@@ -212,12 +213,14 @@ class Converter(object):
             line_nodes[1], line_nodes[diag_node_index] = line_nodes[diag_node_index], line_nodes[1]
 
         cross_point = line_cross(line_nodes[:2], line_nodes[2:])
+        cross_point.z = (line_nodes[0].z + line_nodes[1].z + line_nodes[2].z + line_nodes[3].z) /4
+
         min_distance_to_center = min(point_distance(
             cross_point, p) for p in line_nodes)
         # print(min_distance_to_center, junction.max_arcrad)
 
         self.nodes.append(
-            Node(self.node_id, cross_point.x, cross_point.y, 0, min([junction.max_arcrad, min_distance_to_center])))
+            Node(self.node_id, cross_point.x, cross_point.y, cross_point.z, min([junction.max_arcrad, min_distance_to_center])))
         self.node_id = self.node_id + 1
 
     def handle_Nshape(self, junction):
@@ -314,7 +317,7 @@ class Converter(object):
                 '%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1', 'lat': str(node.x / self.scale), 'lon': str(node.y / self.scale), 'ele':'2'}
             node_root = ET.SubElement(osm_root, 'node', node_attrib)
 
-            ET.SubElement(node_root, 'tag', {'k': "type", 'v': 'Crossing'})
+            ET.SubElement(node_root, 'tag', {'k': "type", 'v': 'Smart'})
             ET.SubElement(node_root, 'tag', {'k': "height", 'v': str(node.z)})
             ET.SubElement(node_root, 'tag', {
                           'k': "minArcRadius", 'v': str(node.max_arcrad)})
@@ -355,4 +358,4 @@ class Converter(object):
         tree.write(filename)
 
 
-Converter('./xodr/Town04.xodr', 100000).generate_osm('./osm/Town04.osm', False)
+Converter('./xodr/Town05.xodr', 100000).generate_osm('./osm/Town05.osm', False)

@@ -46,6 +46,15 @@ class Road(object):
                     points_id += 1
 
 
+
+        elevation = elevations[-1]
+        if elevation.a != 0 or elevation.b != 0 or elevation.c != 0 or elevation.d != 0: # has banking
+            while points_id < len(self.points):                
+                ds = self.points[points_id].s - elevation.s
+                self.points[points_id].z = elevation.a + elevation.b * ds + elevation.c * (ds**2) + elevation.d * (ds**3)
+                points_id += 1
+
+
         self.lateral_profile = None
         self.lanes = lanes
 
