@@ -358,4 +358,4 @@ class Converter(object):
         tree.write(filename)
 
 
-Converter('./xodr/Town05.xodr', 100000).generate_osm('./osm/Town05.osm', False)
+Converter('./xodr/test.xodr', 100000).generate_osm('./osm/test.osm', False)
