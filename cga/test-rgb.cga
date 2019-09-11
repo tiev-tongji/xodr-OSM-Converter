@@ -113,14 +113,13 @@ ResidentialBuildingArea -->
 
 # generate some mass models according to a few very simple rules
 ResidentialBuilding -->
-
-		ResidentialGarage
+		ResidentialShape
 
 	
 ResidentialShape -->
-	50% : s('1.0,0,'0.6) center(xz) ResidentialShape(rand(5,7))
-	20% : s('0.8,0,'0.5) center(xz) ResidentialShape(rand(4.5,5.5))
-	else: s('0.8,0,'0.6) center(xz) ResidentialShape(rand(5,7))
+	50% : s('1.0,0,'0.6) center(xz) ResidentialShape(rand(5,7)) ResidentialGarage
+	20% : s('0.8,0,'0.5) center(xz) ResidentialShape(rand(4.5,5.5)) ResidentialGarage
+	else: s('0.8,0,'0.6) center(xz) ResidentialShape(rand(5,7)) ResidentialGarage
 	
 ResidentialShape(h) -->	
 	15% : Mass(h,"gable")
@@ -254,7 +253,6 @@ Trees -->
 
 @StartRule
 Street -->			# split away the side geometry on the streets 
-	label("street")
 	split(v,uvSpace,0){ -geometry.vMin: Asphalt 		# the lanes start at v-coord 0 i.e. everything below can be splitted away (= asphalt)
 					  | nLanesTotal	  : Lanes 			# the lanes end at v-coord nLanesTotal
 					  | ~1			  : Asphalt }		# all remaining geometry beyond v-coord nLanesTotal can be split away
@@ -268,11 +266,13 @@ Lanes -->
 		LanesTexture("lanes_8_centerline_"+Centerline+"_14x28m.jpg",8)
 										
 LanesTexture(texFile,texNLanes) -->
+	extrude(world.y,SidewalkHeight*0.2)
 	tileUV(0,~14,0)							# the tileUV operation makes sure that one unit in u-space corresponds to approx 14 meters, the v-coord is not touched in the case of 0 as parameter
 	scaleUV(0,1,1/texNLanes)				# scaling the v coord for the texture (e.g. a street with 2 lanes has v coords from 0 to 2, this means it has to map onto 0 to 2/8 on our texture with its 8 lanes)	
 	texture(TextureFolder + "Lanes/" + texFile)
 
 Asphalt -->
+	extrude(world.y,SidewalkHeight*0.2)
 	tileUV(0,14,14) texture(TextureFolder + "Lanes/asphalt_14x14m.jpg")
 
 
@@ -297,6 +297,6 @@ Curbs -->
   	tileUV(0,~2,'1) texture(TextureFolder + "Sidewalks/curbs_2m.jpg")
 
 Pavement -->
-	translate(rel,world,0,SidewalkHeight,0)
+	extrude(world.y,SidewalkHeight)
 	tileUV(0,~2,'1) texture(TextureFolder + "Sidewalks/pavement_01_2x2m.jpg")
 
