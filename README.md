@@ -9,6 +9,7 @@ cd geompreds-1.0.2
 python setup.py install
 pip install pyqtree
 pip install tqdm
+pip install geompreds
 
 python Converter.py
 ```
