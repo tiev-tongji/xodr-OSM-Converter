@@ -498,7 +498,9 @@ class Converter(object):
         tree.write(filename)
 
 
-Converter('./xodr/staggered.xodr', 10000, 0.1).generate_osm('./osm/test.osm', False)
+Converter('./xodr/city.xodr', 100000, 0.1).generate_osm('./osm/city.osm', False)
+Converter('./xodr/highway.xodr', 100000, 0.1).generate_osm('./osm/highway.osm', False)
+# Converter('./xodr/t.xodr', 100000, 0.1).generate_osm('./osm/t.osm', False)
 # Converter('./xodr/town02.xodr', 100000, 1).generate_osm('./osm/town02.osm', False)
 # Converter('./xodr/town03.xodr', 100000, 1).generate_osm('./osm/town03.osm', False)
 # Converter('./xodr/town04.xodr', 100000, 1).generate_osm('./osm/town04.osm', False)
