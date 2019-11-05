@@ -21,8 +21,7 @@ class OpenDrive(object):
                 self.roads[connection.connecting_road].is_connection = True
 
                 road = self.roads[connection.connecting_road]
-                if road.arcrad > max_arcrad:
-                    max_arcrad = road.arcrad
+
             # print(max_arcrad)
             self.junctions[junc_id].max_arcrad = max_arcrad
         # self.max_arcrad = max_arcrad

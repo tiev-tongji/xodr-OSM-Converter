@@ -6,6 +6,7 @@ from opendrivepy.road import Road, RoadLink
 from opendrivepy.roadgeometry import RoadLine, RoadSpiral, RoadArc, RoadElevation
 from opendrivepy.junction import Junction, Connection
 from opendrivepy.lane import Lanes, Lane, LaneLink, LaneSection, LaneWidth
+from opendrivepy.point import Point
 
 from osmtype import Node,Way
 
@@ -49,75 +50,120 @@ class XMLParser(object):
                     successor = (RoadLink(element_type, element_id, contact_point))
 
             # Parses planView for geometry records
-            xplan_view = road.find('planView')
-            plan_view = list()
-            for geometry in xplan_view.iter('geometry'):
-                record = geometry[0].tag
+            lanes = road.find('lanes')
+            laneSection = lanes.find('laneSection')
 
-                s = float(geometry.get('s'))
-                x = float(geometry.get('x'))
-                y = float(geometry.get('y'))
-                hdg = float(geometry.get('hdg'))
-                length = float(geometry.get('length'))
+            center = laneSection.find('center')
+            lane = center.find('lane')
+            border = lane.find('border')
+            points = list()
+            for geometry in border.iter('geometry'):
+                for pointSet in geometry.iter('pointSet'):
+                    for point in pointSet.iter('point'):
+                        x = float(point.get('x'))
+                        y = float(point.get('y'))
+                        z = float(point.get('z'))
+                        points.append(Point(x,y,z))
 
-                if record == 'line':
-                    plan_view.append(RoadLine(s, x, y, hdg, length))
-                elif record == 'arc':
-                    curvature = float(geometry[0].get('curvature'))
-                    plan_view.append(RoadArc(s, x, y, hdg, length, curvature))
-                elif record == 'spiral':
-                    curv_start = float(geometry[0].get('curvStart'))
-                    curv_end = float(geometry[0].get('curvEnd'))
-                    plan_view.append(RoadSpiral(s, x, y, hdg, length, curv_start, curv_end))
+            new_road = Road(name, length, id, predecessor, successor, points)
+            ret[id] = new_road
 
-            # Parses elevationProfile for geometry records
-            elevationProfile = road.find('elevationProfile')
-            elevations = list()
-            for elevation in elevationProfile.iter('elevation'):
-                record = geometry[0].tag
+            left = laneSection.find('left')
+            for lane in center.iter('lane'):
+                border = lane.find('border')
+                points = list()
+                for geometry in border.iter('geometry'):
+                    for pointSet in geometry.iter('pointSet'):
+                        for point in pointSet.iter('point'):
+                            x = float(point.get('x'))
+                            y = float(point.get('y'))
+                            z = float(point.get('z'))
+                            points.append(Point(x,y,z))
 
-                s = float(elevation.get('s'))
-                a = float(elevation.get('a'))
-                b = float(elevation.get('b'))
-                c = float(elevation.get('c'))
-                d = float(elevation.get('d'))
-                
-                elevations.append(RoadElevation(s,a,b,c,d))
+                new_road = Road(name, length, id, predecessor, successor, points)
+                ret[id] = new_road
 
-            # Parse lanes for lane
-            xlanes = road.find('lanes')
 
-            # Lane Sections
-            xlane_section = xlanes.find('laneSection')
 
-            # Center Lane
-            center = list()
-            xcenter = xlane_section.find('center')
-            if xcenter is not None:
-                xlane = xcenter.find('lane')
-                center.append(self.parse_lane(xlane))
+            right = laneSection.find('right')
+            for lane in center.iter('lane'):
+                border = lane.find('border')
+                points = list()
+                for geometry in border.iter('geometry'):
+                    for pointSet in geometry.iter('pointSet'):
+                        for point in pointSet.iter('point'):
+                            x = float(point.get('x'))
+                            y = float(point.get('y'))
+                            z = float(point.get('z'))
+                            points.append(Point(x,y,z))
 
-            # Left Lanes
-            left = list()
-            xleft = xlane_section.find('left')
-            if xleft is not None:
-                for xlane in xleft.iter('lane'):
-                    left.append(self.parse_lane(xlane))
-
-            # Right Lanes
-            right = list()
-            xright = xlane_section.find('right')
-            if xright is not None:
-                for xlane in xright.iter('lane'):
-                    right.append(self.parse_lane(xlane))
-
-            lane_section = LaneSection(left, center, right)
-
-            lanes = Lanes(lane_section)
-
-            new_road = Road(name, length, id, junction, predecessor, successor, plan_view, elevations, lanes)
-            ret[new_road.id] = new_road
+                new_road = Road(name, length, id, predecessor, successor, points)
+                ret[id] = new_road
         return ret
+
+            #     record = geometry[0].tag
+
+            #     s = float(geometry.get('s'))
+            #     x = float(geometry.get('x'))
+            #     y = float(geometry.get('y'))
+            #     hdg = float(geometry.get('hdg'))
+            #     length = float(geometry.get('length'))
+
+            #     if record == 'line':
+            #         plan_view.append(RoadLine(s, x, y, hdg, length))
+            #     elif record == 'arc':
+            #         curvature = float(geometry[0].get('curvature'))
+            #         plan_view.append(RoadArc(s, x, y, hdg, length, curvature))
+            #     elif record == 'spiral':
+            #         curv_start = float(geometry[0].get('curvStart'))
+            #         curv_end = float(geometry[0].get('curvEnd'))
+            #         plan_view.append(RoadSpiral(s, x, y, hdg, length, curv_start, curv_end))
+
+            # # Parses elevationProfile for geometry records
+            # elevationProfile = road.find('elevationProfile')
+            # elevations = list()
+            # for elevation in elevationProfile.iter('elevation'):
+            #     record = geometry[0].tag
+
+            #     s = float(elevation.get('s'))
+            #     a = float(elevation.get('a'))
+            #     b = float(elevation.get('b'))
+            #     c = float(elevation.get('c'))
+            #     d = float(elevation.get('d'))
+                
+            #     elevations.append(RoadElevation(s,a,b,c,d))
+
+            # # Parse lanes for lane
+            # xlanes = road.find('lanes')
+
+            # # Lane Sections
+            # xlane_section = xlanes.find('laneSection')
+
+            # # Center Lane
+            # center = list()
+            # xcenter = xlane_section.find('center')
+            # if xcenter is not None:
+            #     xlane = xcenter.find('lane')
+            #     center.append(self.parse_lane(xlane))
+
+            # # Left Lanes
+            # left = list()
+            # xleft = xlane_section.find('left')
+            # if xleft is not None:
+            #     for xlane in xleft.iter('lane'):
+            #         left.append(self.parse_lane(xlane))
+
+            # # Right Lanes
+            # right = list()
+            # xright = xlane_section.find('right')
+            # if xright is not None:
+            #     for xlane in xright.iter('lane'):
+            #         right.append(self.parse_lane(xlane))
+
+            # lane_section = LaneSection(left, center, right)
+
+            # lanes = Lanes(lane_section)
+
 
     def parse_lane(self, xlane):
 

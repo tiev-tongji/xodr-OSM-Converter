@@ -46,10 +46,9 @@ class Converter(object):
         length = []
 
         for road in self.opendrive.roads.values():
-            for geometry in road.plan_view:
-                x.append(geometry.x)
-                y.append(geometry.y)
-                length.append(geometry.length)
+            for point in road.points:
+                x.append(point.x)
+                y.append(point.y)
 
         maxx = max(x)
         maxy = max(y)
@@ -78,15 +77,7 @@ class Converter(object):
                     if not (new_node_id in way_nodes_id): # not exists in current way_nodes_id
                         way_nodes_id.append(new_node_id)                    
 
-                # set the width of ways
-                if len(way_nodes_id) > 0:
-                    ws_left, wd_left, n_left = road.get_left_width()
-                    ws_right, wd_right, n_right = road.get_right_width()
-                    width = wd_left + wd_right
-
-                    offset = width/2 - wd_right
-                    self.ways[road_id] = Way(
-                        road_id, way_nodes_id, width, offset, road.is_connection, road.style, n_left, n_right, ws_left, ws_right)
+                self.ways[road_id] = Way(road_id, way_nodes_id)
                 pbar.update(1)
 
         # 2. handle the junctions: merge nodes & switch the end points of roads
@@ -403,39 +394,19 @@ class Converter(object):
         # self.node_id = self.node_id + 1
     def add_node(self, x, y, z, arc=0):
         # search for dup
-        near_node_ids = self.spindex.intersect((x, y, x, y))
+        # near_node_ids = self.spindex.intersect((x, y, x, y))
 
-        if len(near_node_ids) > 0: # dup exists
-            # if the new node A is quite close to an existing node B, use B
-            if near_node_ids[0] == 4346:
-                a = 2
-            return near_node_ids[0]
-        else:
-            # add a new node
-            self.nodes.append(Node(self.node_id, x, y, z, arc))
-            self.spindex.insert(
-                self.node_id, (x-self.min_distance, y-self.min_distance, x+self.min_distance, y+self.min_distance))
-            self.node_id = self.node_id + 1
-            return self.node_id - 1
-
-    def insert_node(self, way_id, node_id, way_end):
-        new_node = self.nodes[node_id]
-        way_nodes_id = self.ways[way_id].nodes_id
-        found = False
-        for i in range(len(way_nodes_id)-1):
-            node = self.nodes[way_nodes_id[i]]
-            next_node = self.nodes[way_nodes_id[i+1]]
-            if min(node.x , next_node.x) <= new_node.x <= max(node.x , next_node.x) and min(node.y , next_node.y) <= new_node.y <= max(node.y , next_node.y):
-                if (new_node.x - node.x) * (next_node.y - node.y) == (next_node.x - node.x) * (new_node.y - node.y):
-                    self.ways[way_id].nodes_id.insert(i, node_id)
-                    found = True
-                    break
-        if not found:
-            if way_end == 0:   
-                self.ways[way_id].nodes_id.insert(0, node_id)
-            else:
-                self.ways[way_id].nodes_id.append(node_id)
-        a = 1
+        # if len(near_node_ids) > 0: # dup exists
+        #     # if the new node A is quite close to an existing node B, use B
+        #     return near_node_ids[0]
+        # else:
+        #     # add a new n
+        #     # ode
+        self.nodes.append(Node(self.node_id, x, y, z, arc))
+        # self.spindex.insert(
+        #     self.node_id, (x-self.min_distance, y-self.min_distance, x+self.min_distance, y+self.min_distance))
+        self.node_id = self.node_id + 1
+        return self.node_id - 1
 
     def generate_osm(self, filename, debug = False):
         if debug:
@@ -459,16 +430,14 @@ class Converter(object):
 
             ET.SubElement(node_root, 'tag', {'k': "type", 'v': 'Smart'})
             ET.SubElement(node_root, 'tag', {'k': "height", 'v': str(node.z)})
-            ET.SubElement(node_root, 'tag', {
-                          'k': "minArcRadius", 'v': str(node.max_arcrad)})
 
+        id = 0
         for way_key, way_value in self.ways.items():
-            if way_value.is_connecting:  # ignore all connecting roads
-                continue
-
-            way_attrib = {'id': str(way_key), 'version': '1', 'changeset': '1',
+            
+            way_attrib = {'id': str(id), 'version': '1', 'changeset': '1',
                           'timestamp': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1'}
             way_root = ET.SubElement(osm_root, 'way', way_attrib)
+            id = id + 1
 
             # add all nodes of a road
             for way_node in way_value.nodes_id:
@@ -478,21 +447,8 @@ class Converter(object):
             ET.SubElement(way_root, 'tag', {
                           'k': "name", 'v': 'road'+str(way_value.id)})
             ET.SubElement(way_root, 'tag', {
-                          'k': "streetWidth", 'v': str(way_value.width)})
-            ET.SubElement(way_root, 'tag', {
-                          'k': "streetOffset", 'v': str(way_value.offset)})
-            ET.SubElement(way_root, 'tag', {
-                          'k': "sidewalkWidthLeft", 'v': str(way_value.widthleftwalk)})
-            ET.SubElement(way_root, 'tag', {
-                          'k': "sidewalkWidthRight", 'v': str(way_value.widthrightwalk)})
-            ET.SubElement(way_root, 'tag', {
-                          'k': "NbrOfRightLanes", 'v': str(way_value.nrightlanes)})
+                          'k': "streetWidth", 'v': str(5)})
 
-            ET.SubElement(way_root, 'tag', {
-                          'k': "nLanesTotal", 'v': str(way_value.nrightlanes + way_value.nleftlanes)})
-            if way_value.nrightlanes == 0 or way_value.nleftlanes == 0:
-                ET.SubElement(way_root, 'tag', {
-                    'k': "Centerline", 'v': "none"})
 
         tree = ET.ElementTree(osm_root)
         tree.write(filename)

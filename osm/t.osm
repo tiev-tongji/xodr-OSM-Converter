@@ -1,1 +1,441 @@
-<osm attribution="Simon" copyright="Simon" generator="xodr_OSM_converter" license="GNU or whatever" version="0.6"><bounds maxlat="1" maxlon="1" minlat="0" minlon="0" /><node changeset="1" ele="2" id="0" lat="-0.0001109999942779541" lon="3.4600000381469725e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="1" lat="0.0003442584912131865" lon="3.51007425076633e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="2" lat="0.0004357999801635742" lon="-0.0003142999839782715" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="3" lat="0.0004346114299869091" lon="-5.448720894628472e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="4" lat="0.00043415946687009655" lon="0.0001252049482765097" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="5" lat="0.0004337999725438013" lon="0.0004354999840657463" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="6" lat="0.00037426143445144793" lon="3.513374296359765e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="7" lat="0.00037529035331332295" lon="3.513487467895278e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="8" lat="0.0003845148262247885" lon="3.587109352981189e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="9" lat="0.00039351054780356544" lon="3.804132668960095e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="10" lat="0.000402055996978395" lon="4.159213182240198e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="11" lat="0.0004099407407074117" lon="4.643606978840148e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="12" lat="0.0004169706159251898" lon="5.245385784658281e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="13" lat="0.00042297251108336153" lon="5.949730707530329e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="14" lat="0.00042779862855630354" lon="6.739297124398546e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="15" lat="0.0004313301244825793" lon="7.594641844671873e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="16" lat="0.0004334800352491232" lon="8.494701877242738e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="17" lat="0.0004341954189831622" lon="9.417313109779609e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="18" lat="0.0004341942269226201" lon="9.520204989152738e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="19" lat="0.00034421449494827287" lon="7.510071831176441e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="20" lat="0.00035396831076034424" lon="7.607225435111023e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="21" lat="0.0003633451518772644" lon="7.892806524113757e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="22" lat="0.00037198464518636604" lon="8.355839574052419e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="23" lat="0.0003795547555111067" lon="8.978529182467537e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="24" lat="0.0003857642733866193" lon="9.736903153987738e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="25" lat="0.0003903749820015639" lon="0.00010601845508620945" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="26" lat="0.00039320970085597986" lon="0.00011540118020379587" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="27" lat="0.00039415949595077117" lon="0.00012515664282192315" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="28" lat="0.00034580189986380214" lon="3.510244011408675e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="29" lat="0.00035570565810525855" lon="3.5669572105768575e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="30" lat="0.00036548363801826127" lon="3.734204776242898e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="31" lat="0.00037501286674736234" lon="4.0098833178394544e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="32" lat="0.0003841734998586952" lon="4.390525761620473e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="33" lat="0.00039285032856461305" lon="4.8713449543464404e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="34" lat="0.0004009342286480802" lon="5.4462938689617004e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="35" lat="0.00040832353286440347" lon="6.108141655086525e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="36" lat="0.00041492530873358206" lon="6.848564545097848e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="37" lat="0.00042065652916690316" lon="7.658250673031524e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="38" lat="0.00042544511531398394" lon="8.527016999175253e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="39" lat="0.0004292308433902994" lon="9.443937460089597e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="40" lat="0.00043196610208325433" lon="0.00010397480380543396" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="41" lat="0.0004336164913371569" lon="0.00011375653501942381" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="42" lat="0.00043416125498645927" lon="0.00012366154803297104" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="43" lat="0.0003845409003718146" lon="3.4422247323253135e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="44" lat="0.0003935358608139182" lon="3.228140273288968e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="45" lat="0.0004020871985046336" lon="2.8764706468716722e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="46" lat="0.00040998588558599524" lon="2.3958120226296024e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="47" lat="0.00041703884751211675" lon="1.797913561486089e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="48" lat="0.00042307012930700315" lon="1.097481056693813e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="49" lat="0.00042793238440380583" lon="3.1138052342912115e-06" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="50" lat="0.00043150607098178123" lon="-5.4106122653791136e-06" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="51" lat="0.0004337033275462538" lon="-1.4388863378829274e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="52" lat="0.0004344701330627184" lon="-2.3600211747347678e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="53" lat="0.00043447497500695225" lon="-2.465864326554779e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="54" lat="0.00035597879348397255" lon="3.456020768681165e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="55" lat="0.0003657335021597677" lon="3.291758769197392e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="56" lat="0.000375243636078049" lon="3.019547552429474e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="57" lat="0.00038439012774599106" lon="2.6427952204481143e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="58" lat="0.0003930584624953031" lon="2.166218736859787e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="59" lat="0.0004011401122132959" lon="1.5957848701167646e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="60" lat="0.000408533894121884" lon="9.386354891895063e-06" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="61" lat="0.00041514723768121953" lon="2.0299814344042133e-06" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="62" lat="0.0004208973433791008" lon="-6.0191693247177546e-06" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="63" lat="0.0004257122195307548" lon="-1.4660321512019724e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="64" lat="0.0004295315835841133" lon="-2.3785287358958172e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="65" lat="0.00043230761686115373" lon="-3.3279821719559744e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="66" lat="0.00043400556325075393" lon="-4.3025052426830024e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="67" lat="0.000434604164357388" lon="-5.289896857975621e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="68" lat="0.0003443024874781001" lon="-4.899233296437817e-06" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="69" lat="0.0003542930826121875" lon="-5.845033654031626e-06" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="70" lat="0.0003636564787381466" lon="-8.66773932635688e-06" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="71" lat="0.0003722913170339903" lon="-1.3259081388198464e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="72" lat="0.0003798672599959869" lon="-1.94434117934063e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="73" lat="0.0003860947520336679" lon="-2.6984545138290524e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="74" lat="0.00039073512225363367" lon="-3.559368640942552e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="75" lat="0.0003936108294007104" lon="-4.49414485806062e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="76" lat="0.000394611848491502" lon="-5.4670184880073656e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="77" lat="0.00043427507891525885" lon="2.5415212897417875e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="78" lat="0.0004342922665103197" lon="1.6875098393129416e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="79" lat="0.0004343240408156811" lon="8.33502570296881e-06" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="0" /></node><node changeset="1" ele="2" id="80" lat="0.00043426374298799096" lon="3.519973994006411e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true"><tag k="type" v="Smart" /><tag k="height" v="0" /><tag k="minArcRadius" v="5" /></node><way changeset="1" id="0" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1"><nd ref="0" /><nd ref="80" /><tag k="name" v="road0" /><tag k="streetWidth" v="7.0" /><tag k="streetOffset" v="0.0" /><tag k="sidewalkWidthLeft" v="2.0" /><tag k="sidewalkWidthRight" v="2.0" /><tag k="NbrOfRightLanes" v="1" /><tag k="nLanesTotal" v="2" /></way><way changeset="1" id="1" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1"><nd ref="2" /><nd ref="80" /><tag k="name" v="road1" /><tag k="streetWidth" v="7.0" /><tag k="streetOffset" v="0.0" /><tag k="sidewalkWidthLeft" v="2.0" /><tag k="sidewalkWidthRight" v="2.0" /><tag k="NbrOfRightLanes" v="1" /><tag k="nLanesTotal" v="2" /></way><way changeset="1" id="2" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1"><nd ref="80" /><nd ref="5" /><tag k="name" v="road2" /><tag k="streetWidth" v="7.0" /><tag k="streetOffset" v="0.0" /><tag k="sidewalkWidthLeft" v="2.0" /><tag k="sidewalkWidthRight" v="2.0" /><tag k="NbrOfRightLanes" v="1" /><tag k="nLanesTotal" v="2" /></way></osm>
+<osm attribution="Simon" copyright="Simon" generator="xodr_OSM_converter" license="GNU or whatever" version="0.6">
+    <bounds maxlat="1" maxlon="1" minlat="0" minlon="0" />
+    <node changeset="1" ele="2" id="0" lat="-0.0001109999942779541" lon="3.4600000381469725e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="1" lat="0.0003442584912131865" lon="3.51007425076633e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="2" lat="0.0004357999801635742" lon="-0.0003142999839782715" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="3" lat="0.0004346114299869091" lon="-5.448720894628472e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="4" lat="0.00043415946687009655" lon="0.0001252049482765097" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="5" lat="0.0004337999725438013" lon="0.0004354999840657463" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="6" lat="0.00037426143445144793" lon="3.513374296359765e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="7" lat="0.00037529035331332295" lon="3.513487467895278e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="8" lat="0.0003845148262247885" lon="3.587109352981189e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="9" lat="0.00039351054780356544" lon="3.804132668960095e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="10" lat="0.000402055996978395" lon="4.159213182240198e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="11" lat="0.0004099407407074117" lon="4.643606978840148e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="12" lat="0.0004169706159251898" lon="5.245385784658281e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="13" lat="0.00042297251108336153" lon="5.949730707530329e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="14" lat="0.00042779862855630354" lon="6.739297124398546e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="15" lat="0.0004313301244825793" lon="7.594641844671873e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="16" lat="0.0004334800352491232" lon="8.494701877242738e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="17" lat="0.0004341954189831622" lon="9.417313109779609e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="18" lat="0.0004341942269226201" lon="9.520204989152738e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="19" lat="0.00034421449494827287" lon="7.510071831176441e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="20" lat="0.00035396831076034424" lon="7.607225435111023e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="21" lat="0.0003633451518772644" lon="7.892806524113757e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="22" lat="0.00037198464518636604" lon="8.355839574052419e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="23" lat="0.0003795547555111067" lon="8.978529182467537e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="24" lat="0.0003857642733866193" lon="9.736903153987738e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="25" lat="0.0003903749820015639" lon="0.00010601845508620945" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="26" lat="0.00039320970085597986" lon="0.00011540118020379587" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="27" lat="0.00039415949595077117" lon="0.00012515664282192315" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="28" lat="0.00034580189986380214" lon="3.510244011408675e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="29" lat="0.00035570565810525855" lon="3.5669572105768575e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="30" lat="0.00036548363801826127" lon="3.734204776242898e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="31" lat="0.00037501286674736234" lon="4.0098833178394544e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="32" lat="0.0003841734998586952" lon="4.390525761620473e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="33" lat="0.00039285032856461305" lon="4.8713449543464404e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="34" lat="0.0004009342286480802" lon="5.4462938689617004e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="35" lat="0.00040832353286440347" lon="6.108141655086525e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="36" lat="0.00041492530873358206" lon="6.848564545097848e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="37" lat="0.00042065652916690316" lon="7.658250673031524e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="38" lat="0.00042544511531398394" lon="8.527016999175253e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="39" lat="0.0004292308433902994" lon="9.443937460089597e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="40" lat="0.00043196610208325433" lon="0.00010397480380543396" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="41" lat="0.0004336164913371569" lon="0.00011375653501942381" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="42" lat="0.00043416125498645927" lon="0.00012366154803297104" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="43" lat="0.0003845409003718146" lon="3.4422247323253135e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="44" lat="0.0003935358608139182" lon="3.228140273288968e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="45" lat="0.0004020871985046336" lon="2.8764706468716722e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="46" lat="0.00040998588558599524" lon="2.3958120226296024e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="47" lat="0.00041703884751211675" lon="1.797913561486089e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="48" lat="0.00042307012930700315" lon="1.097481056693813e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="49" lat="0.00042793238440380583" lon="3.1138052342912115e-06" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="50" lat="0.00043150607098178123" lon="-5.4106122653791136e-06" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="51" lat="0.0004337033275462538" lon="-1.4388863378829274e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="52" lat="0.0004344701330627184" lon="-2.3600211747347678e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="53" lat="0.00043447497500695225" lon="-2.465864326554779e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="54" lat="0.00035597879348397255" lon="3.456020768681165e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="55" lat="0.0003657335021597677" lon="3.291758769197392e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="56" lat="0.000375243636078049" lon="3.019547552429474e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="57" lat="0.00038439012774599106" lon="2.6427952204481143e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="58" lat="0.0003930584624953031" lon="2.166218736859787e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="59" lat="0.0004011401122132959" lon="1.5957848701167646e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="60" lat="0.000408533894121884" lon="9.386354891895063e-06" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="61" lat="0.00041514723768121953" lon="2.0299814344042133e-06" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="62" lat="0.0004208973433791008" lon="-6.0191693247177546e-06" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="63" lat="0.0004257122195307548" lon="-1.4660321512019724e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="64" lat="0.0004295315835841133" lon="-2.3785287358958172e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="65" lat="0.00043230761686115373" lon="-3.3279821719559744e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="66" lat="0.00043400556325075393" lon="-4.3025052426830024e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="67" lat="0.000434604164357388" lon="-5.289896857975621e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="68" lat="0.0003443024874781001" lon="-4.899233296437817e-06" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="69" lat="0.0003542930826121875" lon="-5.845033654031626e-06" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="70" lat="0.0003636564787381466" lon="-8.66773932635688e-06" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="71" lat="0.0003722913170339903" lon="-1.3259081388198464e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="72" lat="0.0003798672599959869" lon="-1.94434117934063e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="73" lat="0.0003860947520336679" lon="-2.6984545138290524e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="74" lat="0.00039073512225363367" lon="-3.559368640942552e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="75" lat="0.0003936108294007104" lon="-4.49414485806062e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="76" lat="0.000394611848491502" lon="-5.4670184880073656e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="77" lat="0.00043427507891525885" lon="2.5415212897417875e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="78" lat="0.0004342922665103197" lon="1.6875098393129416e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="79" lat="0.0004343240408156811" lon="8.33502570296881e-06" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="0" />
+    </node>
+    <node changeset="1" ele="2" id="80" lat="0.00043426374298799096" lon="3.519973994006411e-05" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1" visible="true">
+        <tag k="type" v="Smart" />
+        <tag k="height" v="0" />
+        <tag k="minArcRadius" v="5" />
+    </node>
+    <way changeset="1" id="0" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1">
+        <nd ref="0" />
+        <nd ref="80" />
+        <tag k="name" v="road0" />
+        <tag k="streetWidth" v="7.0" />
+        <tag k="streetOffset" v="0.0" />
+        <tag k="sidewalkWidthLeft" v="2.0" />
+        <tag k="sidewalkWidthRight" v="2.0" />
+        <tag k="NbrOfRightLanes" v="1" />
+        <tag k="nLanesTotal" v="2" />
+    </way>
+    <way changeset="1" id="1" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1">
+        <nd ref="2" />
+        <nd ref="80" />
+        <tag k="name" v="road1" />
+        <tag k="streetWidth" v="7.0" />
+        <tag k="streetOffset" v="0.0" />
+        <tag k="sidewalkWidthLeft" v="2.0" />
+        <tag k="sidewalkWidthRight" v="2.0" />
+        <tag k="NbrOfRightLanes" v="1" />
+        <tag k="nLanesTotal" v="2" />
+    </way>
+    <way changeset="1" id="2" timestamp="2019-10-24T08:12:18Z" uid="1" user="simon" version="1">
+        <nd ref="80" />
+        <nd ref="5" />
+        <tag k="name" v="road2" />
+        <tag k="streetWidth" v="7.0" />
+        <tag k="streetOffset" v="0.0" />
+        <tag k="sidewalkWidthLeft" v="2.0" />
+        <tag k="sidewalkWidthRight" v="2.0" />
+        <tag k="NbrOfRightLanes" v="1" />
+        <tag k="nLanesTotal" v="2" />
+    </way>
+</osm>
