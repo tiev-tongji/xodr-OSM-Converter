@@ -14,7 +14,8 @@ class OpenDrive(object):
         self.roads = parser.parse_roads()
         self.controllers = list()
         self.junctions = parser.parse_junctions()
-
+        self.geoRef, self.bound = parser.parse_header()
+        
         for junc_id, junction in self.junctions.items():
             max_arcrad = 0
             for connection in junction.connections:

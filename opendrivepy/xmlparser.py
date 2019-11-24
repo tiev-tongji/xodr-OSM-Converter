@@ -14,6 +14,16 @@ class XMLParser(object):
         self.xml = etree.parse(file)
         self.root = self.xml.getroot()
 
+    def parse_header(self):
+        bound = dict()
+        header = self.root.find('header')
+        bound['north'] = header.get('north')
+        bound['south'] = header.get('south')
+        bound['east'] = header.get('east')
+        bound['west'] = header.get('west')
+
+        geoRef = header.find('geoReference')
+        return geoRef, bound
 
     # Parses all roads in the xodr and instantiates them into objects
     # Returns a list of Road objects

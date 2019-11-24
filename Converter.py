@@ -1,7 +1,9 @@
 from __future__ import division, absolute_import, print_function
 import xml.etree.ElementTree as ET
-from math import fabs, sqrt
+from math import fabs, sqrt, cos
 import matplotlib.pyplot as plt
+import re
+import sys
 from datetime import datetime
 
 from opendrivepy.opendrive import OpenDrive
@@ -15,7 +17,7 @@ from Utils import *
 # To avoid the conflict between nodes
 # Any points that is too close with peer ( < min distance ) are discarded
 MAX_ARC_RADIUS = 50
-
+a = 6378137.0
 
 class Converter(object):
     """docstring for Converter"""
@@ -25,7 +27,11 @@ class Converter(object):
 
         print("Reading OpenDrive file: " + filename)
         self.opendrive = OpenDrive(filename)
-        self.scale, minx, miny, maxx, maxy = self.set_scale(scene_scale)
+
+        self.lat, self.lon = self.get_center()
+        minx, miny, maxx, maxy = self.set_scale()
+        self.lon_scale = a * cos(self.lat)
+
         self.min_distance = min_distance
         # print(self.scale)
 
@@ -38,30 +44,34 @@ class Converter(object):
         self.convert()
         print("done")
 
-    def set_scale(self, scene_scale):
+    def get_center(self):
+        bound = self.opendrive.bound
+        text = self.opendrive.geoRef.text
+        #+lat_0=4.9000000000000000e+1 +lon_0=8.0000000000000000e+0
+        pat = r"\d+\.\d+e[\+\-]\d"
+        res = re.findall(pat, text)
+        return float(res[0]), float(res[1])
+
+
+
+
+    def set_scale(self):
         # cast the bigger map into a smaller map
-        tar_scale = scene_scale  # target boundary is [-tar_scale,tar_scale]
         x = []
         y = []
-        length = []
 
         for road in self.opendrive.roads.values():
             for geometry in road.plan_view:
                 x.append(geometry.x)
                 y.append(geometry.y)
-                length.append(geometry.length)
 
         maxx = max(x)
         maxy = max(y)
         minx = min(x)
         miny = min(y)
-        # scale = max([(maxx - minx), (maxy - miny)]) / tar_scale
-        # print(scale)
 
-        # if scale == 0:
-        #     scale = max(length) / tar_scale
 
-        return scene_scale, minx, miny, maxx, maxy
+        return minx, miny, maxx, maxy
 
     def convert(self):
         # 1. convert all roads into nodes+ways
@@ -468,9 +478,10 @@ class Converter(object):
                       'attribution': "Simon", 'license': "GNU or whatever"}
         osm_root = ET.Element('osm', osm_attrib)
 
-        bounds_attrib = {'minlat': '0', 'minlon': '0',
-                         'maxlat': '1', 'maxlon': '1'}
-        ET.SubElement(osm_root, 'bounds', bounds_attrib)
+        # minlat = sys.float_info.max
+        # minlon = sys.float_info.max
+        # maxlat = -sys.float_info.max
+        # maxlon = -sys.float_info.max
 
         # add all nodes into osm
         for node in self.nodes:
@@ -479,8 +490,20 @@ class Converter(object):
             #     node_attrib = {'id': str(node.id), 'visible': 'true', 'version': '1', 'changeset': '1', 'timestamp': datetime.utcnow().strftime(
             #         '%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1', 'lon': str(0.01), 'lat': str(0.01), 'ele':'2'}
             # else:
+            lat = self.lat + node.y / a
+            lon = self.lon + node.x / self.lon_scale
+
+            # if lat < minlat:
+            #     minlat = lat
+            # if lat > maxlat:
+            #     maxlat = lat
+            # if lon < minlon:
+            #     minlon = lon
+            # if lon > maxlon:
+            #     maxlon = lon
+
             node_attrib = {'id': str(node.id), 'visible': 'true', 'version': '1', 'changeset': '1', 'timestamp': datetime.utcnow().strftime(
-                '%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1', 'lon': str(node.x / self.scale), 'lat': str(node.y / self.scale), 'ele':'2'}
+                '%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1', 'lon': str(lon), 'lat': str(lat), 'ele':'2'}
             node_root = ET.SubElement(osm_root, 'node', node_attrib)
 
             ET.SubElement(node_root, 'tag', {'k': "type", 'v': 'Smart'})
@@ -489,6 +512,11 @@ class Converter(object):
                           'k': "minArcRadius", 'v': str(node.max_arcrad)})
             # if(node.max_arcrad != 0):
             #    print(node.max_arcrad)
+
+        # bounds_attrib = {'minlat': str(minlat), 'minlon': str(minlon),
+        #                  'maxlat': str(maxlat), 'maxlon': str(maxlon)}
+
+        # ET.SubElement(osm_root, 'bounds', bounds_attrib)
 
         for way_key, way_value in self.ways.items():
             if way_value.is_connecting:  # ignore all connecting roads
