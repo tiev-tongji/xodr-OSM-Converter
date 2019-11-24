@@ -412,6 +412,8 @@ class Converter(object):
             return near_node_ids[0]
         else:
             # add a new node
+            # if(arc != 0):
+            #     print(arc)
             self.nodes.append(Node(self.node_id, x, y, z, arc))
             self.spindex.insert(
                 self.node_id, (x-self.min_distance, y-self.min_distance, x+self.min_distance, y+self.min_distance))
@@ -461,6 +463,8 @@ class Converter(object):
             ET.SubElement(node_root, 'tag', {'k': "height", 'v': str(node.z)})
             ET.SubElement(node_root, 'tag', {
                           'k': "minArcRadius", 'v': str(node.max_arcrad)})
+            # if(node.max_arcrad != 0):
+            #    print(node.max_arcrad)
 
         for way_key, way_value in self.ways.items():
             if way_value.is_connecting:  # ignore all connecting roads
@@ -498,10 +502,10 @@ class Converter(object):
         tree.write(filename)
 
 
-Converter('./xodr/city.xodr', 100000, 0.1).generate_osm('./osm/city.osm', False)
-Converter('./xodr/highway.xodr', 100000, 0.1).generate_osm('./osm/highway.osm', False)
+# Converter('./xodr/city.xodr', 100000, 0.1).generate_osm('./osm/city.osm', False)
+# Converter('./xodr/highway.xodr', 100000, 0.1).generate_osm('./osm/highway.osm', False)
 # Converter('./xodr/t.xodr', 100000, 0.1).generate_osm('./osm/t.osm', False)
-# Converter('./xodr/town02.xodr', 100000, 1).generate_osm('./osm/town02.osm', False)
-# Converter('./xodr/town03.xodr', 100000, 1).generate_osm('./osm/town03.osm', False)
-# Converter('./xodr/town04.xodr', 100000, 1).generate_osm('./osm/town04.osm', False)
-# Converter('./xodr/town05.xodr', 100000, 0.1).generate_osm('./osm/town05.osm', False)
+# Converter('./xodr/town02.xodr', 100000, 0.1).generate_osm('./osm/town02.osm', False)
+Converter('./xodr/town03.xodr', 100000, 0.1).generate_osm('./osm/town03.osm', False)
+Converter('./xodr/town04.xodr', 100000, 0.1).generate_osm('./osm/town04.osm', False)
+Converter('./xodr/town05.xodr', 100000, 0.1).generate_osm('./osm/town05.osm', False)
