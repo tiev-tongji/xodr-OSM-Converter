@@ -96,14 +96,14 @@ class Converter(object):
                 is_Xshape_junction = False
 
                 if len(junction.lane_link) == 3:
-                    is_Tshape_junction = self.handle_Tshape1(junction)
+                    is_Tshape_junction = self.handle_Tshape(junction)
 
                 if len(junction.lane_link) == 4:
                     is_Xshape_junction = True
                     self.handle_Xshape(junction)
 
-                if not is_Tshape_junction and not is_Xshape_junction:
-                    self.handle_Nshape(junction)
+                # if not is_Tshape_junction and not is_Xshape_junction:
+                #     self.handle_Nshape_avg(junction)
 
         # return ways, nodes
 
@@ -304,15 +304,34 @@ class Converter(object):
         cross_point = line_cross(line_nodes[:2], line_nodes[2:])
         cross_point.z = (line_nodes[0].z + line_nodes[1].z + line_nodes[2].z + line_nodes[3].z) /4
 
-        self.min_distance_to_center = min(point_distance(
+        min_distance_to_center = min(point_distance(
             cross_point, p) for p in line_nodes)
         # print(self.min_distance_to_center, junction.max_arcrad)
 
-        new_node_id = self.add_node(cross_point.x, cross_point.y, cross_point.z, min([junction.max_arcrad, self.min_distance_to_center]))
+        new_node_id = self.add_node(cross_point.x, cross_point.y, cross_point.z, min([junction.max_arcrad, min_distance_to_center]))
         
         for incoming_road, way_end in zip(incomings, ends):
             self.ways[incoming_road].nodes_id[way_end] = new_node_id
 
+    def handle_Nshape_avg(self, junction):
+        sum_x = 0
+        sum_y = 0
+
+        self.min_distance_to_center = MAX_ARC_RADIUS
+        for incoming_road, connecting_road, contact_point in junction.lane_link:
+
+            contact_node_id = self.ways[connecting_road].nodes_id[0 if contact_point == 'start' else -1]
+
+            way_end = self.way_end_to_point(contact_node_id, incoming_road)
+
+            sub_node = self.nodes[self.ways[incoming_road].nodes_id[way_end]]
+            self.ways[incoming_road].nodes_id[way_end] = self.node_id
+
+            # to calculate the center point of junctions
+            sum_x += sub_node.x
+            sum_y += sub_node.y
+
+        self.add_node(sum_x / len(junction.lane_link),sum_y / len(junction.lane_link), 0, min([junction.max_arcrad, self.min_distance_to_center]))
 
     def handle_Nshape(self, junction):
         
@@ -407,8 +426,8 @@ class Converter(object):
 
         if len(near_node_ids) > 0: # dup exists
             # if the new node A is quite close to an existing node B, use B
-            if near_node_ids[0] == 4346:
-                a = 2
+            if self.nodes[near_node_ids[0]].max_arcrad < arc:
+                self.nodes[near_node_ids[0]].max_arcrad = arc
             return near_node_ids[0]
         else:
             # add a new node
@@ -455,6 +474,11 @@ class Converter(object):
 
         # add all nodes into osm
         for node in self.nodes:
+            # if abs(node.x / self.scale) > 0.1 or abs(node.y / self.scale) > 0.1:
+            #     print(node.x / self.scale, node.y / self.scale)
+            #     node_attrib = {'id': str(node.id), 'visible': 'true', 'version': '1', 'changeset': '1', 'timestamp': datetime.utcnow().strftime(
+            #         '%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1', 'lon': str(0.01), 'lat': str(0.01), 'ele':'2'}
+            # else:
             node_attrib = {'id': str(node.id), 'visible': 'true', 'version': '1', 'changeset': '1', 'timestamp': datetime.utcnow().strftime(
                 '%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1', 'lon': str(node.x / self.scale), 'lat': str(node.y / self.scale), 'ele':'2'}
             node_root = ET.SubElement(osm_root, 'node', node_attrib)
@@ -507,5 +531,5 @@ class Converter(object):
 # Converter('./xodr/t.xodr', 100000, 0.1).generate_osm('./osm/t.osm', False)
 # Converter('./xodr/town02.xodr', 100000, 0.1).generate_osm('./osm/town02.osm', False)
 Converter('./xodr/town03.xodr', 100000, 0.1).generate_osm('./osm/town03.osm', False)
-Converter('./xodr/town04.xodr', 100000, 0.1).generate_osm('./osm/town04.osm', False)
+# Converter('./xodr/town04.xodr', 100000, 0.1).generate_osm('./osm/town04.osm', False)
 Converter('./xodr/town05.xodr', 100000, 0.1).generate_osm('./osm/town05.osm', False)
