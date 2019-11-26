@@ -1,6 +1,6 @@
 from __future__ import division, absolute_import, print_function
 import xml.etree.ElementTree as ET
-from math import fabs, sqrt, cos
+from math import fabs, sqrt, cos, pi
 import matplotlib.pyplot as plt
 import re
 import sys
@@ -17,7 +17,7 @@ from Utils import *
 # To avoid the conflict between nodes
 # Any points that is too close with peer ( < min distance ) are discarded
 MAX_ARC_RADIUS = 50
-a = 6378137.0
+EQUATOR_RADIUS = 6378137.0
 
 class Converter(object):
     """docstring for Converter"""
@@ -30,7 +30,9 @@ class Converter(object):
 
         self.lat, self.lon = self.get_center()
         minx, miny, maxx, maxy = self.set_scale()
-        self.lon_scale = a * cos(self.lat)
+
+        self.lon_radius = EQUATOR_RADIUS * cos(self.lat)
+        self.lon_scale = 2 * pi * self.lon_radius / 360
 
         self.min_distance = min_distance
         # print(self.scale)
@@ -112,8 +114,8 @@ class Converter(object):
                     is_Xshape_junction = True
                     self.handle_Xshape(junction)
 
-                # if not is_Tshape_junction and not is_Xshape_junction:
-                #     self.handle_Nshape_avg(junction)
+                if not is_Tshape_junction and not is_Xshape_junction:
+                    self.handle_Nshape(junction)
 
         # return ways, nodes
 
@@ -490,8 +492,9 @@ class Converter(object):
             #     node_attrib = {'id': str(node.id), 'visible': 'true', 'version': '1', 'changeset': '1', 'timestamp': datetime.utcnow().strftime(
             #         '%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1', 'lon': str(0.01), 'lat': str(0.01), 'ele':'2'}
             # else:
-            lat = self.lat + node.y / a
-            lon = self.lon + node.x / self.lon_scale
+            
+            lat = node.y/1000/119.7
+            lon = node.x/1000/119.7
 
             # if lat < minlat:
             #     minlat = lat
@@ -502,8 +505,19 @@ class Converter(object):
             # if lon > maxlon:
             #     maxlon = lon
 
-            node_attrib = {'id': str(node.id), 'visible': 'true', 'version': '1', 'changeset': '1', 'timestamp': datetime.utcnow().strftime(
-                '%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1', 'lon': str(lon), 'lat': str(lat), 'ele':'2'}
+            node_attrib = {
+                'id': str(node.id), 
+                'visible': 'true', 
+                'version': '1', 
+                'changeset': '1', 
+                'timestamp': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'), 
+                'user': 'simon', 
+                'uid': '1', 
+                'lon': str(lon), 
+                'lat': str(lat), 
+                'ele':'2'
+                }
+
             node_root = ET.SubElement(osm_root, 'node', node_attrib)
 
             ET.SubElement(node_root, 'tag', {'k': "type", 'v': 'Smart'})
@@ -557,7 +571,8 @@ class Converter(object):
 # Converter('./xodr/city.xodr', 100000, 0.1).generate_osm('./osm/city.osm', False)
 # Converter('./xodr/highway.xodr', 100000, 0.1).generate_osm('./osm/highway.osm', False)
 # Converter('./xodr/t.xodr', 100000, 0.1).generate_osm('./osm/t.osm', False)
-# Converter('./xodr/town02.xodr', 100000, 0.1).generate_osm('./osm/town02.osm', False)
+Converter('./xodr/town01.xodr', 100000, 0.1).generate_osm('./osm/town01.osm', False)
+Converter('./xodr/town02.xodr', 100000, 0.1).generate_osm('./osm/town02.osm', False)
 Converter('./xodr/town03.xodr', 100000, 0.1).generate_osm('./osm/town03.osm', False)
-# Converter('./xodr/town04.xodr', 100000, 0.1).generate_osm('./osm/town04.osm', False)
+Converter('./xodr/town04.xodr', 100000, 0.1).generate_osm('./osm/town04.osm', False)
 Converter('./xodr/town05.xodr', 100000, 0.1).generate_osm('./osm/town05.osm', False)
