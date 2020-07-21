@@ -56,12 +56,21 @@ All done
 ### Dependency
 
 python=3.7.3
+
 geompreds==1.0.2
+
 lxml==4.5.2
+
 matplotlib==3.3.0
+
 numpy==1.19.0
+
 Pillow==7.2.0
+
 Pyqtree==1.0.0
+
 scipy==1.5.1
+
 tqdm==4.48.0
+
 
