@@ -1,5 +1,0 @@
-include *
-recursive-include src *.pyx *.pxd *.py *.h
-global-exclude *.pyc
-global-exclude *.pyo
-global-exclude *~
