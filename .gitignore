@@ -3,4 +3,4 @@
 __pychache__
 *.pyc
 bash.exe.stackdump
-.osm
+*.osm
