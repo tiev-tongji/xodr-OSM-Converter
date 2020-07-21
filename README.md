@@ -36,8 +36,19 @@ For example, you may use the example OpenDRIVE file (named `example.xodr`) in `.
 pip install -r requirements.txt # install the dependencies
 cd src
 python Converter.py             # run using default parameters
-# which is equal to 
-# python Converter.py --input_file=example.xodr --output_file=example.osm
+
+# which is equal to python Converter.py --input_file=example.xodr --output_file=example.osm
+```
+
+and you will see:
+
+```
+Namespace(debug=False, input_file='example.xodr', output_file='example.osm', precise=0.1, scale=10000)
+Start converting file...
+Reading OpenDrive file: ../resource/example.xodr
+Converting...
+Processing road_id=109: 100%|################################| 98/98 [00:00<00:00, 1863.52it/s]
+All done
 ```
 
 
@@ -45,7 +56,6 @@ python Converter.py             # run using default parameters
 ### Dependency
 
 python=3.7.3
-
 geompreds==1.0.2
 lxml==4.5.2
 matplotlib==3.3.0

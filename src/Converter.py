@@ -38,7 +38,6 @@ class Converter(object):
 
         self.spindex = Index(bbox=(minx, miny, maxx, maxy))
         self.convert()
-        print("done")
 
     def set_scale(self, scene_scale):
         # cast the bigger map into a smaller map
@@ -500,19 +499,21 @@ class Converter(object):
         tree.write(filename)
 
 
+RESOURCE_PATH = "../resource/"
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='A random road generator')
     parser.add_argument('--debug', type=bool, default=False, help='Is using debug mode')
-    parser.add_argument('--input_file', type=str, default='../example/example.xodr', help='Input OpenDRIVE file name')
+    parser.add_argument('--input_file', type=str, default='example.xodr', help='Input OpenDRIVE file name')
     parser.add_argument('--scale', type=int, default=10000, help='Scale of xodr file (in meter)')
     parser.add_argument('--precise', type=int, default=0.1, help='Precision of OSM file (in meter)')
-    parser.add_argument('--output_file', type=str, default='../example/example.osm', help='Output OSM file name')
+    parser.add_argument('--output_file', type=str, default='example.osm', help='Output OSM file name')
     args = parser.parse_args()
     print(args)
 
     print('Start converting file...')
 
-    converter = Converter(args.input_file, args.scale, args.precise)
-    converter.generate_osm(args.output_file, args.debug)
+    converter = Converter(RESOURCE_PATH + args.input_file, args.scale, args.precise)
+    converter.generate_osm(RESOURCE_PATH + args.output_file, args.debug)
 
     print('All done')
