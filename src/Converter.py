@@ -454,7 +454,7 @@ class Converter(object):
 
         # add all nodes into osm
         for node in self.nodes:
-            node_attrib = {'id': str(node.id), 'visible': 'true', 'version': '1', 'changeset': '1', 'timestamp': datetime.utcnow().strftime(
+            node_attrib = {'id': str(node.id+1), 'visible': 'true', 'version': '1', 'changeset': '1', 'timestamp': datetime.utcnow().strftime(
                 '%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1', 'lon': str(node.x / self.scale), 'lat': str(node.y / self.scale), 'ele':'2'}
             node_root = ET.SubElement(osm_root, 'node', node_attrib)
 
@@ -463,17 +463,18 @@ class Converter(object):
             ET.SubElement(node_root, 'tag', {
                           'k': "minArcRadius", 'v': str(node.max_arcrad)})
 
-        for way_key, way_value in self.ways.items():
+        for index, way_id in enumerate(self.ways):
+            way_value = self.ways[way_id]
             if way_value.is_connecting:  # ignore all connecting roads
                 continue
 
-            way_attrib = {'id': str(way_key), 'version': '1', 'changeset': '1',
+            way_attrib = {'id': str(index+1), 'version': '1', 'changeset': '1',
                           'timestamp': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1'}
             way_root = ET.SubElement(osm_root, 'way', way_attrib)
 
             # add all nodes of a road
             for way_node in way_value.nodes_id:
-                ET.SubElement(way_root, 'nd', {'ref': str(way_node)})
+                ET.SubElement(way_root, 'nd', {'ref': str(way_node+1)})
 
             # ET.SubElement(way_root, 'tag', {'k': "highway", 'v':'tertiary'})
             ET.SubElement(way_root, 'tag', {
