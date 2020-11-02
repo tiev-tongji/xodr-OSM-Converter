@@ -14,8 +14,32 @@ class Road(object):
         self.type = list()
         self.is_connection = False
         self.plan_view = plan_view
+        self.lane_section = lanes.lane_section
+        self.start_lway_id = 0
+        self.start_rway_id = 0
 
-        self.style = plan_view[0].style
+        self.ln = 0
+        self.rn = 0
+        self.ldwidth = list()
+        self.rdwidth = list()
+        self.lswidth = list()
+        self.rswidth = list()
+
+        for lane in self.lane_section.left:
+            if lane.type == "driving":
+                self.ln += 1
+                self.ldwidth.append(lane.width.a)
+            elif lane.type == "sidewalk":
+                self.lswidth.append(lane.width.a)
+
+        for lane in self.lane_section.right:
+            if lane.type == "driving":
+                self.rn += 1
+                self.rdwidth.append(lane.width.a)
+            elif lane.type == "sidewalk":
+                self.rswidth.append(lane.width.a)
+
+        self.style = plan_view[0].style # style can be 'line', 'arc', 'spiral' or 'mix'
         for view in plan_view[1:]:
             if view.style != self.style and view.length > 1e-2:
                 self.style = 'mix'
@@ -24,6 +48,7 @@ class Road(object):
         self.points = list()
         self.arcrad = 0
         # a road is composed by serval plan views
+        # TODO: WHY??
         for view in self.plan_view:
             if view.style == 'arc' and view.length > 1e-2 and view.radius > self.arcrad and view.radius < 100:
                 self.arcrad = view.radius
@@ -56,7 +81,6 @@ class Road(object):
 
 
         self.lateral_profile = None
-        self.lanes = lanes
 
         # Points that represent the road
         # Endpoints between records are duplicated atm
@@ -99,7 +123,7 @@ class Road(object):
         swidth = 0
         dwidth = 0
         n = 0
-        for lane in self.lanes.lane_section.left:
+        for lane in self.lane_section.left:
             if lane.type == "driving":
                 dwidth += lane.width.a
                 n += 1
@@ -112,7 +136,7 @@ class Road(object):
         swidth = 0
         dwidth = 0
         n = 0
-        for lane in self.lanes.lane_section.right:
+        for lane in self.lane_section.right:
             if lane.type == "driving":
                 dwidth += lane.width.a
                 n += 1

@@ -32,12 +32,18 @@ class RoadLine(RoadGeometry):
         super(RoadLine, self).__init__(s, x, y, hdg, length, style='line')
         self.generate_coords()
 
+    '''
+    y
+      /
+     /  hdg
+    /)_____  x
+
+    '''
     def generate_coords(self):
         for n in (0, self.length):
             x = self.x + (n * cos(self.hdg))
             y = self.y + (n * sin(self.hdg))
-            self.points.append(Point(x, y, self.s + n))
-
+            self.points.append(Point(x, y, self.s + n, self.hdg))
 
 class RoadArc(RoadGeometry):
     def __init__(self, s, x, y, hdg, length, curvature):
@@ -48,32 +54,39 @@ class RoadArc(RoadGeometry):
 
     def base_arc(self, n):
         radius = self.radius
-        circumference = radius * pi * 2
-        angle = (self.length/circumference) * 2 * pi
-        # If curvature < 0, then the arc rotates clockwise
+        circumference = radius * pi * 2 # 2 pi r
+        angle = self.length / radius    # absolutely positive
+        # If curvature > 0, then the arc rotates anticlockwise
         if self.curvature > 0:
-            start_angle = self.hdg - (pi / 2)
-            circlex = self.x - (cos(start_angle) * radius)
-            circley = self.y - (sin(start_angle) * radius)
+            # the centre of a circle
+            start_angle = self.hdg + (pi / 2)   # from x to centre of circle
+            circlex = self.x + (cos(start_angle) * radius)
+            circley = self.y + (sin(start_angle) * radius)
 
-            array = list(range(n))
-            return radius, circlex, circley, [start_angle + (angle * x / (n-1)) for x in array], array
-        # Otherwise it is anticlockwise
+            array = list(range(n))  # from 0 to n-1
+            
+            return radius, circlex, circley, [start_angle - pi + (angle * x / (n-1)) for x in array], array
+            
+        # Otherwise it is clockwise
         else:
-            start_angle = self.hdg + (pi / 2)
-            circlex = self.x - (cos(start_angle) * radius)
-            circley = self.y - (sin(start_angle) * radius)
+            start_angle = self.hdg - (pi / 2)
+            circlex = self.x + (cos(start_angle) * radius)
+            circley = self.y + (sin(start_angle) * radius)
             array = list(range(n))
-            return radius, circlex, circley, [start_angle - (angle * x / (n-1)) for x in array], array
+            return radius, circlex, circley, [start_angle + pi - (angle * x / (n-1)) for x in array], array
 
     def generate_coords(self, n):
         r, circle_x, circle_y, angles, array = self.base_arc(n)
 
-        for n, s in zip(angles,array):
+        for n, s in zip(angles, array):
             x = circle_x + (r * cos(n))
             y = circle_y + (r * sin(n))
-            self.points.append(Point(x, y, self.s + s))
-
+            
+            if self.curvature > 0:
+                self.points.append(Point(x, y, self.s + s, n + pi / 2))
+            else:
+                self.points.append(Point(x, y, self.s + s, n - pi / 2))
+        
 class RoadSpiral(RoadGeometry):
     def __init__(self, s, x, y, hdg, length, curvstart, curvend):
         super(RoadSpiral, self).__init__(s, x, y, hdg, length, 'spiral')

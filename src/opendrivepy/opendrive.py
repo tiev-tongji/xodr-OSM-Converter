@@ -12,9 +12,9 @@ class OpenDrive(object):
         parser = opendrivepy.xmlparser.XMLParser(file)
         self.header = None
         self.roads = parser.parse_roads()
-        self.controllers = list()
         self.junctions = parser.parse_junctions()
-
+        self.controllers = list()
+        
         for junc_id, junction in self.junctions.items():
             max_arcrad = 0
             for connection in junction.connections:
@@ -27,8 +27,8 @@ class OpenDrive(object):
             self.junctions[junc_id].max_arcrad = max_arcrad
         # self.max_arcrad = max_arcrad
                 
-        self.junction_groups = list()
-        self.stations = list()
+        self.junction_groups = list()   # no use for now
+        self.stations = list()          # no use for now
         self.roadmap = RoadMap(self.roads)
 
 
