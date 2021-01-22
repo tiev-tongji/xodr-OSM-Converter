@@ -3,11 +3,11 @@ from __future__ import division, print_function, absolute_import
 
 from lxml import etree
 from opendrivepy.road import Road, RoadLink
-from opendrivepy.roadgeometry import RoadLine, RoadSpiral, RoadArc
+from opendrivepy.roadgeometry import RoadLine, RoadSpiral, RoadArc, RoadElevation
 from opendrivepy.junction import Junction, Connection
 from opendrivepy.lane import Lanes, Lane, LaneLink, LaneSection, LaneWidth
 
-from osmtype import Node,Way
+from OSMtype import Node,Way
 
 class XMLParser(object):
     def __init__(self, file):
@@ -70,6 +70,19 @@ class XMLParser(object):
                     curv_end = float(geometry[0].get('curvEnd'))
                     plan_view.append(RoadSpiral(s, x, y, hdg, length, curv_start, curv_end))
 
+            # Parses elevationProfile for geometry records
+            elevationProfile = road.find('elevationProfile')
+            elevations = list()
+            for elevation in elevationProfile.iter('elevation'):
+                record = geometry[0].tag
+
+                s = float(elevation.get('s'))
+                a = float(elevation.get('a'))
+                b = float(elevation.get('b'))
+                c = float(elevation.get('c'))
+                d = float(elevation.get('d'))
+                
+                elevations.append(RoadElevation(s,a,b,c,d))
 
             # Parse lanes for lane
             xlanes = road.find('lanes')
@@ -102,7 +115,7 @@ class XMLParser(object):
 
             lanes = Lanes(lane_section)
 
-            new_road = Road(name, length, id, junction, predecessor, successor, plan_view, lanes)
+            new_road = Road(name, length, id, junction, predecessor, successor, plan_view, elevations, lanes)
             ret[new_road.id] = new_road
         return ret
 
@@ -156,7 +169,7 @@ class XMLParser(object):
                 contact_point = connection.get('contactPoint')
                 new_connection = Connection(id, incoming_road, connecting_road, contact_point)
 
-                new_junction.connections.append(new_connection)
+                new_junction.add_connection(new_connection)
 
             ret[new_junction.id] = new_junction
 
