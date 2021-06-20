@@ -126,20 +126,20 @@ class Converter(object):
                 pbar.update(1)
 
         # 2. handle the junctions: merge nodes & switch the end points of roads
-        for junction in self.opendrive.junctions.values():
-            if len(junction.lane_link) >= 2:
-                is_Tshape_junction = False
-                is_Xshape_junction = False
+        # for junction in self.opendrive.junctions.values():
+        #     if len(junction.lane_link) >= 2:
+        #         is_Tshape_junction = False
+        #         is_Xshape_junction = False
 
-                if len(junction.lane_link) == 3:
-                    is_Tshape_junction = self.handle_Tshape(junction)
+        #         if len(junction.lane_link) == 3:
+        #             is_Tshape_junction = self.handle_Tshape(junction)
 
-                if len(junction.lane_link) == 4:
-                    is_Xshape_junction = True
-                    self.handle_Xshape(junction)
+        #         if len(junction.lane_link) == 4:
+        #             is_Xshape_junction = True
+        #             self.handle_Xshape(junction)
 
-                if not is_Tshape_junction and not is_Xshape_junction:
-                    self.handle_Nshape(junction)
+        #         if not is_Tshape_junction and not is_Xshape_junction:
+        #             self.handle_Nshape(junction)
 
         # return ways, nodes
 
@@ -481,8 +481,8 @@ class Converter(object):
 
         for index, way_id in enumerate(self.ways):
             way_value = self.ways[way_id]
-            if way_value.is_connecting:  # ignore all connecting roads
-                continue
+            # if way_value.is_connecting:  # ignore all connecting roads
+            #     continue
 
             way_attrib = {'id': str(index+1), 'version': '1', 'changeset': '1',
                           'timestamp': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1'}
