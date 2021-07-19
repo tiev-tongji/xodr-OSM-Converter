@@ -120,9 +120,16 @@ class RoadSpiral(RoadGeometry):
         cos_rot = cos(theta)
         xcoords = list()
         ycoords = list()
+
         for i in range(n):
             tx, ty, ttheta = self.odr_spiral((i * self.length / n) + self.spiralS)
-
+            
+            dx = tx - ox
+            dy = ty - oy
+            xcoords.append(dx * cos_rot + dy * sin_rot)
+            ycoords.append(dy * cos_rot - dx * sin_rot)
+            tx, ty, ttheta = self.odr_spiral((i * self.length / n) + self.spiralS+pi/180)
+            
             dx = tx - ox
             dy = ty - oy
             xcoords.append(dx * cos_rot + dy * sin_rot)
@@ -134,7 +141,7 @@ class RoadSpiral(RoadGeometry):
         xarr, yarr = self.base_spiral(n)
         sinRot = sin(self.hdg)
         cosRot = cos(self.hdg)
-        for i in range(n):
+        for i in range(2*n):
             tmpX = self.x + cosRot * xarr[i] - sinRot * yarr[i]
             tmpY = self.y + cosRot * yarr[i] + sinRot * xarr[i]
             xarr[i] = tmpX
@@ -144,5 +151,16 @@ class RoadSpiral(RoadGeometry):
 
     def generate_coords(self, n):
         xarr, yarr = self.evaluate_spiral(n)
-        for i in range(n):
-            self.points.append(Point(xarr[i], yarr[i], i))
+        angle=0
+        # angle_arr.append(0)
+        for i in range(0,2*n,2):
+            # if i<n-1:
+            #     angle=np.arctan2(yarr[i+1]-yarr[i-1], xarr[i+1]-xarr[i-1])
+            angle=np.arctan2(yarr[i+1]-yarr[i],(xarr[i+1]-xarr[i]))
+            # if self.cDot < 0:
+            #       angle=angle+pi
+            self.points.append(Point(xarr[i], yarr[i], i,angle))
+            # angle_arr.append(angle)
+        # angle_arr[0]=angle_arr[1]
+        # for i in range(n):
+        #     self.points.append(Point(xarr[i*2], yarr[i*2], i,angle_arr[i]))

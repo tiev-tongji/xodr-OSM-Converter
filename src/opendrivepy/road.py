@@ -27,15 +27,18 @@ class Road(object):
 
         for lane in self.lane_section.left:
             if lane.type == "driving":
-                self.ln += 1
-                self.ldwidth.append(lane.width.a)
+                if lane.width.a not in self.ldwidth:
+                    self.ln += 1
+                    self.ldwidth.append(lane.width.a)
+               
             elif lane.type == "sidewalk":
                 self.lswidth.append(lane.width.a)
 
         for lane in self.lane_section.right:
             if lane.type == "driving":
-                self.rn += 1
-                self.rdwidth.append(lane.width.a)
+                if lane.width.a not in self.rdwidth:
+                    self.rn += 1
+                    self.rdwidth.append(lane.width.a)
             elif lane.type == "sidewalk":
                 self.rswidth.append(lane.width.a)
 
