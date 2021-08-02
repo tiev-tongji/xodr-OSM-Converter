@@ -159,7 +159,7 @@ class RoadSpiral(RoadGeometry):
             angle=np.arctan2(yarr[i+1]-yarr[i],(xarr[i+1]-xarr[i]))
             # if self.cDot < 0:
             #       angle=angle+pi
-            self.points.append(Point(xarr[i], yarr[i], i,angle))
+            self.points.append(Point(xarr[i], yarr[i], self.s+i/2,angle))
             # angle_arr.append(angle)
         # angle_arr[0]=angle_arr[1]
         # for i in range(n):

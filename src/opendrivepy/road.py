@@ -14,33 +14,9 @@ class Road(object):
         self.type = list()
         self.is_connection = False
         self.plan_view = plan_view
-        self.lane_section = lanes.lane_section
+        self.lane_section_list = lanes.lane_section_list
         self.start_lway_id = 0
         self.start_rway_id = 0
-
-        self.ln = 0
-        self.rn = 0
-        self.ldwidth = list()
-        self.rdwidth = list()
-        self.lswidth = list()
-        self.rswidth = list()
-
-        for lane in self.lane_section.left:
-            if lane.type == "driving":
-                if lane.width.a not in self.ldwidth:
-                    self.ln += 1
-                    self.ldwidth.append(lane.width.a)
-               
-            elif lane.type == "sidewalk":
-                self.lswidth.append(lane.width.a)
-
-        for lane in self.lane_section.right:
-            if lane.type == "driving":
-                if lane.width.a not in self.rdwidth:
-                    self.rn += 1
-                    self.rdwidth.append(lane.width.a)
-            elif lane.type == "sidewalk":
-                self.rswidth.append(lane.width.a)
 
         self.style = plan_view[0].style # style can be 'line', 'arc', 'spiral' or 'mix'
         for view in plan_view[1:]:
@@ -122,31 +98,6 @@ class Road(object):
         return False
 
     # WARNING: This only works so far with a fix width. Simplified for testing purposes
-    def get_left_width(self):
-        swidth = 0
-        dwidth = 0
-        n = 0
-        for lane in self.lane_section.left:
-            if lane.type == "driving":
-                dwidth += lane.width.a
-                n += 1
-            elif lane.type == "sidewalk":
-                swidth += lane.width.a
-
-        return swidth, dwidth, n
-
-    def get_right_width(self):
-        swidth = 0
-        dwidth = 0
-        n = 0
-        for lane in self.lane_section.right:
-            if lane.type == "driving":
-                dwidth += lane.width.a
-                n += 1
-            elif lane.type == "sidewalk":
-                swidth += lane.width.a
-
-        return swidth, dwidth, n
 
 class RoadLink(object):
     def __init__(self, element_type, element_id, contact_point):
