@@ -40,7 +40,7 @@ class RoadLine(RoadGeometry):
 
     '''
     def generate_coords(self):
-        for n in (0, self.length):
+        for n in range(0, int(ceil(self.length) + 1)):
             x = self.x + (n * cos(self.hdg))
             y = self.y + (n * sin(self.hdg))
             self.points.append(Point(x, y, self.s + n, self.hdg))

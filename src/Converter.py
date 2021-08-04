@@ -91,8 +91,7 @@ class Converter(object):
                             for point in road.points:
                                 dis=point.s
                                 if lane_section.have_point(dis,next_lane):
-                                    # width=lane.get_width(dis-lane_section.s)
-                                    width=0
+                                    width=lane.get_width(dis-lane_section.s)
                                     if point in point_to_width:
                                         width+=point_to_width[point]
                                     point_to_width[point]=width
@@ -113,7 +112,7 @@ class Converter(object):
                                 self.ways[way_id] = Way(
                                     way_id, way_nodes_id, width, offset, road.is_connection, road.style, n_left, n_right, ws_left, ws_right)
                             way_id += 1
-                            if way_id==12:
+                            if way_id==10:
                                 print("here")
                     road.start_rway_id = way_id
                     offset = 0
@@ -125,8 +124,7 @@ class Converter(object):
                             for point in road.points:
                                 dis=point.s
                                 if lane_section.have_point(dis,next_lane):
-                                    # width=lane.get_width(dis-lane_section.s)
-                                    width=0
+                                    width=lane.get_width(dis-lane_section.s)
                                     if point in point_to_width:
                                         width+=point_to_width[point]
                                     point_to_width[point]=width
@@ -155,10 +153,8 @@ class Converter(object):
 
                             # offset += width
                             way_id += 1
-                            if way_id==12:
+                            if way_id==10:
                                 print("here")
-                        # set the width of ways
-                
                 pbar.update(1)
 
         # 2. handle the junctions: merge nodes & switch the end points of roads

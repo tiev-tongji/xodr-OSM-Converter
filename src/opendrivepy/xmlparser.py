@@ -26,8 +26,8 @@ class XMLParser(object):
             name = road.get('name')
             length = road.get('length')
             id = road.get('id')
-            # if id=='5':
-            #     print("here")
+            if id=='114':
+                print("here")
             junction = road.get('junction')
 
             # Parses link for predecessor and successors
