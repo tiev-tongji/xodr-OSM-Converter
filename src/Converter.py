@@ -131,8 +131,8 @@ class Converter(object):
                                 self.ways[way_id] = Way(
                                     way_id, way_nodes_id, width, offset, road.is_connection, road.style, n_left, n_right, ws_left, ws_right)
                                 way_id += 1
-                                if way_id==8:
-                                    print("here")
+                                # if way_id==8:
+                                #     print("here")
                     road.start_rway_id = way_id
                     offset = 0
                     point_to_width=dict()
@@ -174,8 +174,8 @@ class Converter(object):
 
                             # offset += width
                                 way_id += 1
-                                if way_id==8:
-                                    print("here")
+                                # if way_id==8:
+                                #     print("here")
                 pbar.update(1)
 
         # 2. handle the junctions: merge nodes & switch the end points of roads
@@ -508,7 +508,7 @@ class Converter(object):
         # plt.axis('scaled')
         wgs84_to_utm =Proj(proj='utm',zone=50,ellps='WGS84')
         base_utmx,base_utmy=wgs84_to_utm(self.opendrive.lon,self.opendrive.lat)
-        if 1:
+        if debug:
            
            
             list_x=list()
@@ -528,7 +528,6 @@ class Converter(object):
                 plt.axis('scaled')
             
             plt.show()
-            input()
         osm_attrib = {'version': "0.6", 'generator': "xodr_OSM_converter", 'copyright': "Simon",
                       'attribution': "Simon", 'license': "GNU or whatever"}
         osm_root = ET.Element('osm', osm_attrib)
@@ -592,8 +591,8 @@ RESOURCE_PATH = "../resource/"
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='A random road generator')
-    parser.add_argument('--debug', type=bool, default=True, help='Is using debug mode')
-    parser.add_argument('--input_file', type=str, default='test5.xodr', help='Input OpenDRIVE file name')
+    parser.add_argument('--debug', type=bool, default=False, help='Is using debug mode')
+    parser.add_argument('--input_file', type=str, default='test_field_single.xodr', help='Input OpenDRIVE file name')
     parser.add_argument('--scale', type=int, default=10000, help='Scale of xodr file (in meter)')
     parser.add_argument('--precise', type=int, default=0.1, help='Precision of OSM file (in meter)')
     parser.add_argument('--output_file', type=str, default='example.osm', help='Output OSM file name')
