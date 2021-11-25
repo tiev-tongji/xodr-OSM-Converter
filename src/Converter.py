@@ -12,7 +12,7 @@ from pyqtree import Index
 from OSMtype import *
 from Utils import *
 import argparse
-
+from pyproj import Proj
 
 # To avoid the conflict between nodes
 # Any points that is too close with peer ( < min distance ) are discarded
@@ -72,8 +72,23 @@ class Converter(object):
             for road_id, road in self.opendrive.roads.items():
                 # road.points=list(set(road.points))
                 # road.points.sort(key=lambda x:x.s)
-                if road_id=='5':
-                    print("here")
+                # id_list={"1",}#"118",}#"119"}
+                # if (road_id in id_list):
+                #     # continue
+                #     cnt=0
+                #     list_x=list()
+                #     list_y=list()
+                #     for point in road.points:
+                #         # print(point.x,point.y,point.s)
+                #         cnt+=1
+                #         # if cnt<550 and cnt>500:
+                #         list_x.append(point.x)
+                #         list_y.append(point.y)
+                #     plt.plot(list_x,list_y,"-o")
+                #     print("cnt=",cnt)
+                #     plt.axis('scaled')
+                #     plt.show()
+                #     input()
                 road.start_lway_id = way_id
                 pbar.set_description("Processing road_id=%s" % road_id)
                 offset = 0
@@ -86,22 +101,25 @@ class Converter(object):
                         next_lane=road.lane_section_list[lane_i+1]
                     point_to_width=dict()
                     for lane in lane_section.left:
-                        if lane.type == "driving":
                             way_nodes_id = list()
                             for point in road.points:
                                 dis=point.s
+                                # if dis>1274:
+                                #     print("here")
                                 if lane_section.have_point(dis,next_lane):
                                     width=lane.get_width(dis-lane_section.s)
+                                    offset=0
                                     if point in point_to_width:
-                                        width+=point_to_width[point]
-                                    point_to_width[point]=width
-                                    dx = cos(point.rad + pi / 2) * ( (width / 2))
-                                    dy = sin(point.rad + pi / 2) * ( (width / 2))
-                                    new_node_id = self.add_node(point.x + dx, point.y + dy, point.z)
-
-                                    # print(new_node_id)
-                                    if not (new_node_id in way_nodes_id): # not exists in current way_nodes_id
-                                        way_nodes_id.append(new_node_id)
+                                        offset=point_to_width[point]
+                                    point_to_width[point]=width+offset
+                                    # width=0
+                                    if lane.type == "driving":
+                                        dx = cos(point.rad + pi / 2) * (offset+ (width / 2))
+                                        dy = sin(point.rad + pi / 2) * ( offset+ (width / 2))
+                                        new_node_id = self.add_node(point.x + dx, point.y + dy, point.z)
+                                        # print(new_node_id)
+                                        if not (new_node_id in way_nodes_id): # not exists in current way_nodes_id
+                                            way_nodes_id.append(new_node_id)
                             if len(way_nodes_id) > 0:
                                 ws_left, wd_left, n_left = lane_section.get_left_width()
                                 ws_right, wd_right, n_right = lane_section.get_right_width()
@@ -109,37 +127,40 @@ class Converter(object):
 
                                 # offset = width/2 - wd_right
                                 offset=width
+                                way_nodes_id.reverse()
                                 self.ways[way_id] = Way(
                                     way_id, way_nodes_id, width, offset, road.is_connection, road.style, n_left, n_right, ws_left, ws_right)
-                            way_id += 1
-                            if way_id==10:
-                                print("here")
+                                way_id += 1
+                                if way_id==8:
+                                    print("here")
                     road.start_rway_id = way_id
                     offset = 0
                     point_to_width=dict()
-                    last_width=0
                     for lane in lane_section.right:
-                        if lane.type == "driving":
+                        
                             way_nodes_id = list()
                             for point in road.points:
                                 dis=point.s
                                 if lane_section.have_point(dis,next_lane):
                                     width=lane.get_width(dis-lane_section.s)
+                                    offset=0
                                     if point in point_to_width:
-                                        width+=point_to_width[point]
-                                    point_to_width[point]=width
+                                        offset=point_to_width[point]
+                                    point_to_width[point]=width+offset
+                                    # width=0
                                     # if abs(width-5.419095)<0.01:
                                     #     continue
                                     # if width<last_width:
                                     #     #5.419095
                                     last_width=width
-                                    dx = cos(point.rad - pi / 2) * ( (width / 2))
-                                    dy = sin(point.rad - pi / 2) * ( (width / 2))
-                                    new_node_id = self.add_node(point.x + dx, point.y + dy, point.z)
+                                    if lane.type == "driving":
+                                        dx = cos(point.rad - pi / 2) * (offset+ (width / 2))
+                                        dy = sin(point.rad - pi / 2) * ( offset+(width / 2))
+                                        new_node_id = self.add_node(point.x + dx, point.y + dy, point.z)
 
-                                    # print(new_node_id)
-                                    if not (new_node_id in way_nodes_id): # not exists in current way_nodes_id
-                                        way_nodes_id.append(new_node_id)
+                                        # print(new_node_id)
+                                        if not (new_node_id in way_nodes_id): # not exists in current way_nodes_id
+                                            way_nodes_id.append(new_node_id)
 
                             if len(way_nodes_id) > 0:
                                 ws_left, wd_left, n_left = lane_section.get_left_width()
@@ -152,9 +173,9 @@ class Converter(object):
                                     way_id, way_nodes_id, width, offset, road.is_connection, road.style, n_left, n_right, ws_left, ws_right)
 
                             # offset += width
-                            way_id += 1
-                            if way_id==10:
-                                print("here")
+                                way_id += 1
+                                if way_id==8:
+                                    print("here")
                 pbar.update(1)
 
         # 2. handle the junctions: merge nodes & switch the end points of roads
@@ -484,11 +505,30 @@ class Converter(object):
                 self.ways[way_id].nodes_id.append(node_id)
 
     def generate_osm(self, filename, debug = False):
-        if debug:
-            for node in self.nodes:
-                plt.plot(node.x, node.y, node.color)
+        # plt.axis('scaled')
+        wgs84_to_utm =Proj(proj='utm',zone=50,ellps='WGS84')
+        base_utmx,base_utmy=wgs84_to_utm(self.opendrive.lon,self.opendrive.lat)
+        if 1:
+           
+           
+            list_x=list()
+            list_y=list()
+            for way_id in [8,9,10,11,12]:
+                for id in self.ways[way_id].nodes_id:
+                    node=self.nodes[id]
+                    if id!=node.id:
+                        print("not equal")
+                    list_x.append(node.x)
+                    list_y.append(node.y)
+                plt.plot(list_x, list_y,"-o")
+                
+                # ax.scatter(list_x,list_y)
+                # for i in range(len(list_x)):
+                #     ax.annotate(str(node_list[i])+"+"+str(i),(list_x[i],list_y[i]))
+                plt.axis('scaled')
+            
             plt.show()
-
+            input()
         osm_attrib = {'version': "0.6", 'generator': "xodr_OSM_converter", 'copyright': "Simon",
                       'attribution': "Simon", 'license': "GNU or whatever"}
         osm_root = ET.Element('osm', osm_attrib)
@@ -499,8 +539,9 @@ class Converter(object):
 
         # add all nodes into osm
         for node in self.nodes:
+            node_x,node_y= wgs84_to_utm(base_utmx+node.x,base_utmy+node.y,inverse=True)
             node_attrib = {'id': str(node.id+1), 'visible': 'true', 'version': '1', 'changeset': '1', 'timestamp': datetime.utcnow().strftime(
-                '%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1', 'lon': str(node.x / self.scale), 'lat': str(node.y / self.scale), 'ele':'2'}
+                '%Y-%m-%dT%H:%M:%SZ'), 'user': 'simon', 'uid': '1', 'lon': str(node_x ), 'lat': str(node_y), 'ele':'2'}
             node_root = ET.SubElement(osm_root, 'node', node_attrib)
 
             ET.SubElement(node_root, 'tag', {'k': "type", 'v': 'Smart'})
@@ -509,6 +550,8 @@ class Converter(object):
                           'k': "minArcRadius", 'v': str(node.max_arcrad)})
 
         for index, way_id in enumerate(self.ways):
+            # if way_id!=95 or way_id!=86:
+            #     continue
             way_value = self.ways[way_id]
             # if way_value.is_connecting:  # ignore all connecting roads
             #     continue
@@ -549,8 +592,8 @@ RESOURCE_PATH = "../resource/"
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='A random road generator')
-    parser.add_argument('--debug', type=bool, default=False, help='Is using debug mode')
-    parser.add_argument('--input_file', type=str, default='test.xodr', help='Input OpenDRIVE file name')
+    parser.add_argument('--debug', type=bool, default=True, help='Is using debug mode')
+    parser.add_argument('--input_file', type=str, default='test5.xodr', help='Input OpenDRIVE file name')
     parser.add_argument('--scale', type=int, default=10000, help='Scale of xodr file (in meter)')
     parser.add_argument('--precise', type=int, default=0.1, help='Precision of OSM file (in meter)')
     parser.add_argument('--output_file', type=str, default='example.osm', help='Output OSM file name')

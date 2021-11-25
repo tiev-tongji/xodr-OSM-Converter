@@ -13,8 +13,15 @@ class XMLParser(object):
     def __init__(self, file):
         self.xml = etree.parse(file)
         self.root = self.xml.getroot()
+    # add
 
-
+    def  parse_lonlat(self):
+        header=self.root.find("header")
+        if header is not None:
+            lonlat=header.find("geoReference")
+            if lonlat is not None:
+                return 121.2025889778762,31.29192951980918 
+        return 121.2025889778762,31.29192951980918  
     # Parses all roads in the xodr and instantiates them into objects
     # Returns a list of Road objects
     def parse_roads(self):
@@ -26,8 +33,6 @@ class XMLParser(object):
             name = road.get('name')
             length = road.get('length')
             id = road.get('id')
-            if id=='114':
-                print("here")
             junction = road.get('junction')
 
             # Parses link for predecessor and successors
@@ -120,6 +125,15 @@ class XMLParser(object):
 
             new_road = Road(name, length, id, junction, predecessor, successor, plan_view, elevations, lanes)
             ret[new_road.id] = new_road
+            # if id=="100":
+            #     import matplotlib.pyplot as plt
+            #     list_x=list()
+            #     list_y=list()
+            #     for point in new_road.points:
+            #         list_x.append(point.x)
+            #         list_y.append(point.y)
+            #     plt.plot(list_x, list_y,"-o")
+            #     plt.show()
         return ret
 
     def parse_lane(self, xlane):

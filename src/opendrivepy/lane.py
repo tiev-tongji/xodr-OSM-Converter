@@ -38,7 +38,7 @@ class LaneSection(object):
                 self.rswidth.append(lane.width.a)
     def have_point(self,dis,next_lane=None):
         if next_lane:
-            if(dis>=self.s and dis <=next_lane.s):
+            if(dis>=self.s and dis <=next_lane.s+1):
                 return True
             else:
                 return False
@@ -47,11 +47,6 @@ class LaneSection(object):
                 return True
             else:
                 return False
-    
-
-
-                    
-                
 
     def get_left_width(self):
         swidth = 0
