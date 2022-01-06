@@ -4,10 +4,11 @@ from math import sqrt
 
 
 class Point(object):
-    def __init__(self, x, y, s = 0):
+    def __init__(self, x, y, s = 0, rad = 0):
         self.s = s
         self.x = x
         self.y = y
+        self.rad = rad
         self.z = 0
 
     def distance(self, other):

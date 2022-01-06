@@ -13,8 +13,15 @@ class XMLParser(object):
     def __init__(self, file):
         self.xml = etree.parse(file)
         self.root = self.xml.getroot()
+    # add
 
-
+    def  parse_lonlat(self):
+        header=self.root.find("header")
+        if header is not None:
+            lonlat=header.find("geoReference")
+            if lonlat is not None:
+                return 121.2025854628344,31.29191979703701
+        return 121.2025854628344,31.29191979703701
     # Parses all roads in the xodr and instantiates them into objects
     # Returns a list of Road objects
     def parse_roads(self):
@@ -86,37 +93,47 @@ class XMLParser(object):
 
             # Parse lanes for lane
             xlanes = road.find('lanes')
+            LaneSection_list=list()
+            s=None
+            for xlane_section in xlanes.iter('laneSection'):
+                #offset
+                s=float(xlane_section.get("s"))
+                # Center Lane
+                center = list()
+                xcenter = xlane_section.find('center')
+                if xcenter is not None:
+                    xlane = xcenter.find('lane')
+                    center.append(self.parse_lane(xlane))
 
-            # Lane Sections
-            xlane_section = xlanes.find('laneSection')
+                # Left Lanes
+                left = list()
+                xleft = xlane_section.find('left')
+                if xleft is not None:
+                    for xlane in xleft.iter('lane'):
+                        left.append(self.parse_lane(xlane))
 
-            # Center Lane
-            center = list()
-            xcenter = xlane_section.find('center')
-            if xcenter is not None:
-                xlane = xcenter.find('lane')
-                center.append(self.parse_lane(xlane))
+                # Right Lanes
+                right = list()
+                xright = xlane_section.find('right')
+                if xright is not None:
+                    for xlane in xright.iter('lane'):
+                        right.append(self.parse_lane(xlane))
 
-            # Left Lanes
-            left = list()
-            xleft = xlane_section.find('left')
-            if xleft is not None:
-                for xlane in xleft.iter('lane'):
-                    left.append(self.parse_lane(xlane))
-
-            # Right Lanes
-            right = list()
-            xright = xlane_section.find('right')
-            if xright is not None:
-                for xlane in xright.iter('lane'):
-                    right.append(self.parse_lane(xlane))
-
-            lane_section = LaneSection(left, center, right)
-
-            lanes = Lanes(lane_section)
+                lane_section = LaneSection(left, center, right,s)
+                LaneSection_list.append(lane_section)
+            lanes = Lanes(LaneSection_list)
 
             new_road = Road(name, length, id, junction, predecessor, successor, plan_view, elevations, lanes)
             ret[new_road.id] = new_road
+            # if id=="100":
+            #     import matplotlib.pyplot as plt
+            #     list_x=list()
+            #     list_y=list()
+            #     for point in new_road.points:
+            #         list_x.append(point.x)
+            #         list_y.append(point.y)
+            #     plt.plot(list_x, list_y,"-o")
+            #     plt.show()
         return ret
 
     def parse_lane(self, xlane):
@@ -144,16 +161,16 @@ class XMLParser(object):
 
         # Width
         width = None
-        xwidth = xlane.find('width')
-        if xwidth is not None:
+        width_list=list()
+        for xwidth in xlane.iter('width'):
             s_offset = float(xwidth.get('sOffset'))
             a = float(xwidth.get('a'))
             b = float(xwidth.get('b'))
             c = float(xwidth.get('c'))
             d = float(xwidth.get('d'))
             width = LaneWidth(s_offset, a, b, c, d)
-
-        return Lane(id, type, level, predecessor, successor, width)
+            width_list.append(width)
+        return Lane(id, type, level, predecessor, successor, width_list)
 
     # TODO Add Priorities, JunctionGroups and LaneLinks
     def parse_junctions(self):

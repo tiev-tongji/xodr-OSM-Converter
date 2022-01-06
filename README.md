@@ -13,10 +13,12 @@ The parser samples the roads in the OpenDrive road network that are expressed an
 To use the converter, you should put your OpenDRIVE file in the resource folder, and run Converter.py
 
 ```shell
-usage: Converter.py [-h] [--debug DEBUG] [--input_file INPUT_FILE]
+usage: Converter.py/Converter_to_csv.py/Converter_center.py [-h] [--debug DEBUG] [--input_file INPUT_FILE]
                     [--scale SCALE] [--precise PRECISE]
                     [--output_file OUTPUT_FILE]
-
+Converter.py:convert to osm file
+Converter_to_csv.py:convert to Semantic road map ,two files,main_lane and lanes
+Converter_center.py:convert to Road centerline(Not tested yet)
 A random road generator
 
 optional arguments:
@@ -64,5 +66,6 @@ Pillow==7.2.0
 Pyqtree==1.0.0
 scipy==1.5.1
 tqdm==4.48.0
+pyproj==3.2.1
 ```
 
