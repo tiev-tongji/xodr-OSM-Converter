@@ -67,12 +67,12 @@ class Converter(object):
     def convert(self):
         # 1. convert all roads into nodes+ways
         way_id = 0
-
+        junction_list=dict()
         with tqdm(total=len(self.opendrive.roads), ascii=True) as pbar:
             for road_id, road in self.opendrive.roads.items():
                 # road.points=list(set(road.points))
                 # road.points.sort(key=lambda x:x.s)
-                # id_list={"1",}#"118",}#"119"}
+                # id_list={"444","430","742"}#"118",}#"119"}
                 # if (road_id in id_list):
                 #     # continue
                 #     cnt=0
@@ -89,6 +89,22 @@ class Converter(object):
                 #     plt.axis('scaled')
                 #     plt.show()
                 #     input()
+                # if road_id==2350:
+                #     continue
+                # if road.junction!="-1" :
+                #     find_flag=0
+                #     if road.junction in junction_list:
+                #         for cessor in junction_list[road.junction]:
+                #             if (cessor[0].element_id==road.predecessor.element_id and cessor[1].element_id==road.successor.element_id) or (cessor[1].element_id==road.predecessor.element_id and cessor[0].element_id==road.successor.element_id):
+                #                 find_flag=1
+                #                 break
+                #         if find_flag:
+                #             continue
+                #         else:
+                #             junction_list[road.junction].append([road.predecessor,road.successor])
+                #     else:
+                #         junction_list[road.junction]=list()
+
                 road.start_lway_id = way_id
                 pbar.set_description("Processing road_id=%s" % road_id)
                 offset = 0
@@ -592,7 +608,7 @@ RESOURCE_PATH = "../resource/"
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='A random road generator')
     parser.add_argument('--debug', type=bool, default=False, help='Is using debug mode')
-    parser.add_argument('--input_file', type=str, default='test_field_single.xodr', help='Input OpenDRIVE file name')
+    parser.add_argument('--input_file', type=str, default='testfield_no_roundabout.xodr', help='Input OpenDRIVE file name')
     parser.add_argument('--scale', type=int, default=10000, help='Scale of xodr file (in meter)')
     parser.add_argument('--precise', type=int, default=0.1, help='Precision of OSM file (in meter)')
     parser.add_argument('--output_file', type=str, default='example.osm', help='Output OSM file name')

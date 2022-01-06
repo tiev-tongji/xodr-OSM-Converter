@@ -1,7 +1,7 @@
 class Node(object):
     """docstring for Node"""
 
-    def __init__(self, node_id, x, y, z, max_arcrad=0, color = 'y.',road_id=0,is_mid=False,lane_num=0,lane_seq=0,lane_width=0,heading=0,utmx=0,utmy=0,):
+    def __init__(self, node_id, x, y, z, max_arcrad=0, color = 'y.',road_id=0,is_mid=False,lane_num=0,lane_seq=0,lane_width=0,heading=0,utmx=0,utmy=0,way_id=0):
         super(Node, self).__init__()
         self.id = node_id
         self.x = x
@@ -19,6 +19,7 @@ class Node(object):
         self.lane_width=lane_width
         self.utmx=utmx
         self.utmy=utmy
+        self.way_id=way_id
 
 
 class Way(object):

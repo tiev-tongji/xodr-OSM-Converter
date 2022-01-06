@@ -12,6 +12,8 @@ from pyqtree import Index
 from OSMtype import *
 from Utils import *
 import argparse
+import csv
+from pyproj import Proj
 
 
 # To avoid the conflict between nodes
@@ -401,6 +403,36 @@ class Converter(object):
 
     def generate_osm(self, filename, debug = False):
         # plt.axis('scaled')
+        wgs84_to_utm =Proj(proj='utm',zone=51,ellps='WGS84')
+        base_utmx,base_utmy=wgs84_to_utm(self.opendrive.lon,self.opendrive.lat)
+        csvfile = open(filename+"_main.csv", 'w')
+        writer = csv.writer(csvfile)
+        writer.writerow(['road_id', 'lon', 'lat','utmX','utmY','heading','mode','speed_mode','event_mode','oppsite_side_mode','lane_num','lane_seq','lane_width'])
+        data = [ ]
+        if debug:
+            for node in self.nodes:
+                utmx,utmy=base_utmx+node.x,base_utmy+node.y
+                node_x,node_y= wgs84_to_utm(utmx,utmy,inverse=True)
+                data.append((node.road_id,node_x,node_y,utmx,utmy,node.heading,0,3,0,0,node.lane_num,node.lane_seq,node.lane_width))
+                plt.plot(node.x, node.y, node.color)
+            plt.show()
+        csvfile.close()
+        return 
+        csvfile = open(filename+"_lane.csv", 'w')
+        writer = csv.writer(csvfile)
+        writer.writerow(['road_id' ,'lane_seq','lon', 'lat','utmX','utmY'])
+        data = [ ]
+        for index, way_id in enumerate(self.ways):
+            way_value = self.ways[way_id]
+            for way_node in way_value.nodes_id:
+                node=self.nodes[way_node]
+                # if not node.is_mid:
+                utmx,utmy=base_utmx+node.x,base_utmy+node.y
+                node_x,node_y= wgs84_to_utm(utmx,utmy,inverse=True)
+                data.append((node.road_id,node.lane_seq,node_x,node_y,utmx,utmy))
+        writer.writerows(data)
+        csvfile.close()
+        return 
         wgs84_to_utm =Proj(proj='utm',zone=50,ellps='WGS84')
         base_utmx,base_utmy=wgs84_to_utm(self.opendrive.lon,self.opendrive.lat)
         if 0:
@@ -520,7 +552,7 @@ RESOURCE_PATH = "../resource/"
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='A random road generator')
     parser.add_argument('--debug', type=bool, default=True, help='Is using debug mode')
-    parser.add_argument('--input_file', type=str, default='example.xodr', help='Input OpenDRIVE file name')
+    parser.add_argument('--input_file', type=str, default='new_undermap.xodr', help='Input OpenDRIVE file name')
     parser.add_argument('--scale', type=int, default=10000, help='Scale of xodr file (in meter)')
     parser.add_argument('--precise', type=int, default=0.1, help='Precision of OSM file (in meter)')
     parser.add_argument('--output_file', type=str, default='example.osm', help='Output OSM file name')

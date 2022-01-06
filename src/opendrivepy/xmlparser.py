@@ -20,8 +20,8 @@ class XMLParser(object):
         if header is not None:
             lonlat=header.find("geoReference")
             if lonlat is not None:
-                return 121.2025889778762,31.29192951980918 
-        return 121.2025889778762,31.29192951980918  
+                return 121.2025854628344,31.29191979703701
+        return 121.2025854628344,31.29191979703701
     # Parses all roads in the xodr and instantiates them into objects
     # Returns a list of Road objects
     def parse_roads(self):
