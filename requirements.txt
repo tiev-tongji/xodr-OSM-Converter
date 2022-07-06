@@ -1,5 +1,5 @@
 geompreds==1.0.2
-lxml==4.6.5
+lxml==4.9.1
 matplotlib==3.3.0
 numpy==1.19.0
 Pyqtree==1.0.0
