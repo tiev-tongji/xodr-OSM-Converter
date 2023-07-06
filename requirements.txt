@@ -3,6 +3,6 @@ lxml==4.6.5
 matplotlib==3.3.0
 numpy==1.19.0
 Pyqtree==1.0.0
-scipy==1.5.1
+scipy==1.10.0
 tqdm==4.48.0
 pyproj==3.2.1
